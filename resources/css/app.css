@@ -1,0 +1,8 @@
+
+@import "./admin/dashboard.css";
+@import "./admin/users.css";
+@import "./bibliothecaire/livres.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

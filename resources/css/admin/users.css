@@ -1,0 +1,605 @@
+
+/* =========================================================
+   USERS PAGE
+========================================================= */
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.05);
+
+    margin-bottom:25px;
+}
+
+.page-header h1{
+
+    font-weight:700;
+
+    margin:0;
+}
+
+.page-header p{
+
+    color:#666;
+
+    margin:0;
+}
+
+/* =========================================================
+   STATS CARDS
+========================================================= */
+
+.stat-card{
+
+    background:white;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    text-align:center;
+
+    transition:all 0.28s ease;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.05),
+        0 1px 3px rgba(0,0,0,0.03);
+
+    margin-bottom:20px;
+}
+
+.stat-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.10),
+        0 2px 6px rgba(0,0,0,0.05);
+}
+
+.stat-card .stat-icon{
+
+    font-size:24px;
+
+    margin-bottom:10px;
+
+    opacity:0.9;
+
+    transition:0.25s ease;
+}
+
+.stat-card:hover .stat-icon{
+
+    transform:scale(1.12);
+}
+
+.stat-card h6{
+
+    font-size:0.95rem;
+
+    margin-bottom:6px;
+
+    font-weight:600;
+}
+
+.stat-card h3{
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
+    margin:0;
+}
+
+/* =========================
+   COLORS
+========================= */
+
+/* Étudiants */
+
+.stat-etudiant{
+
+    border-top:4px solid #28a745;
+
+    background:linear-gradient(
+        135deg,
+        rgba(40,167,69,0.08),
+        rgba(40,167,69,0.03)
+    );
+}
+
+.stat-etudiant h3,
+.stat-etudiant .stat-icon{
+
+    color:#28a745;
+}
+
+/* Bibliothécaires */
+
+.stat-biblio{
+
+    border-top:4px solid #17a2b8;
+
+    background:linear-gradient(
+        135deg,
+        rgba(23,162,184,0.08),
+        rgba(23,162,184,0.03)
+    );
+}
+
+.stat-biblio h3,
+.stat-biblio .stat-icon{
+
+    color:#17a2b8;
+}
+
+/* Administrateurs */
+
+.stat-admin{
+
+    border-top:4px solid #ffc107;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,193,7,0.08),
+        rgba(255,193,7,0.03)
+    );
+}
+
+.stat-admin h3,
+.stat-admin .stat-icon{
+
+    color:#ffc107;
+}
+
+/* Administration */
+
+.stat-administration{
+
+    border-top:4px solid #dc3545;
+
+    background:linear-gradient(
+        135deg,
+        rgba(220,53,69,0.08),
+        rgba(220,53,69,0.03)
+    );
+}
+
+.stat-administration h3,
+.stat-administration .stat-icon{
+
+    color:#dc3545;
+}
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.search-add-card{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,0.05);
+
+    margin-bottom:25px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:nowrap;
+}
+
+/* SEARCH INPUT */
+
+.search-add-card input{
+
+    flex:1;
+
+    min-width:200px;
+}
+
+/* SELECTS */
+
+.search-add-card select{
+
+    width:150px;
+
+    flex-shrink:0;
+}
+
+/* BUTTONS */
+
+.search-add-card .btn{
+
+    height:38px;
+
+    min-width:120px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:5px;
+
+    font-weight:500;
+
+    white-space:nowrap;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:992px){
+
+    .search-add-card{
+
+        flex-wrap:wrap;
+    }
+
+    .search-add-card input{
+
+        width:100%;
+    }
+
+    .search-add-card select{
+
+        flex:1;
+    }
+
+    .search-add-card .btn{
+
+        flex:1;
+    }
+}
+
+@media(max-width:768px){
+
+    .search-add-card{
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .search-add-card input,
+    .search-add-card select,
+    .search-add-card .btn{
+
+        width:100%;
+    }
+}
+
+
+
+/* =========================================================
+   TABLE SECTION
+========================================================= */
+
+.table-section{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,0.05);
+}
+
+.table-section h4{
+
+    font-weight:700;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table{
+
+    margin-bottom:0;
+}
+
+.table thead th{
+
+    font-weight:700;
+
+    border-bottom:2px solid #e2e8f0;
+
+    white-space:nowrap;
+}
+
+.table tbody tr{
+
+    transition:0.2s ease;
+}
+
+.table tbody tr:hover td{
+
+    background:#f8fafc;
+}
+
+.table td{
+
+    vertical-align:middle;
+}
+
+/* =========================================================
+   INACTIVE USER
+========================================================= */
+
+.inactive-user{
+
+    opacity:0.5;
+}
+
+/* =========================================================
+   ROLE BADGES
+========================================================= */
+
+.badge-role{
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:0.8rem;
+
+    font-weight:600;
+}
+
+.badge-etudiant{
+
+    background:#d4edda;
+
+    color:#155724;
+}
+
+.badge-bibliothecaire{
+
+    background:#d1ecf1;
+
+    color:#0c5460;
+}
+
+.badge-administrateur{
+
+    background:#fff3cd;
+
+    color:#856404;
+}
+
+.badge-administration{
+
+    background:#f8d7da;
+
+    color:#721c24;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.action-btn{
+
+    border:none;
+
+    padding:7px 12px;
+
+    border-radius:8px;
+
+    font-size:0.85rem;
+
+    font-weight:600;
+
+    transition:0.2s ease;
+}
+
+.action-btn:hover{
+
+    opacity:0.9;
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination{
+
+    margin-bottom:0;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:992px){
+
+    .page-header{
+
+        padding:18px;
+    }
+
+    .stat-card h3{
+
+        font-size:1.5rem;
+    }
+
+    .search-add-card{
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .search-add-card input,
+    .search-add-card select,
+    .search-add-card .btn{
+
+        width:100%;
+    }
+}
+
+
+/* =========================================================
+   ACTION MENU
+========================================================= */
+
+.action-menu{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+}
+
+/* 3 DOTS */
+
+.menu-dots{
+
+    width:34px;
+
+    height:34px;
+
+    border-radius:8px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:0.2s ease;
+}
+
+.menu-dots:hover{
+
+    background:#f1f5f9;
+}
+
+/* =========================================================
+   DROPDOWN MENU
+========================================================= */
+
+.dropdown-menu-user{
+
+    position:absolute;
+
+    top:40px;
+
+    right:0;
+
+    width:170px;
+
+    background:white;
+
+    border-radius:10px;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.12);
+
+    display:none;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    z-index:999;
+}
+
+/* BUTTONS */
+
+.dropdown-menu-user button{
+
+    border:none;
+
+    background:none;
+
+    padding:12px 14px;
+
+    text-align:left;
+
+    font-size:0.9rem;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    transition:0.2s ease;
+
+    width:100%;
+}
+
+/* EDIT */
+
+.dropdown-menu-user .edit{
+
+    color:#16a34a;
+}
+
+.dropdown-menu-user .edit:hover{
+
+    background:#ecfdf5;
+}
+
+/* DELETE */
+
+.dropdown-menu-user .delete{
+
+    color:#dc2626;
+}
+
+.dropdown-menu-user .delete:hover{
+
+    background:#fef2f2;
+}
+
+
+
+@media(max-width:768px){
+
+    .table-section{
+
+        padding:15px;
+    }
+
+    .page-header h1{
+
+        font-size:1.4rem;
+    }
+}
+
