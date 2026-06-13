@@ -1,0 +1,23 @@
+.table-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.student-info {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.student-info small {
+  font-size: 0.75rem;
+  color: #4f46e5;
+  font-weight: 600;
+}

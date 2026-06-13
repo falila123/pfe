@@ -557,3 +557,69 @@ textarea#description {
     width: 100%;
   }
 }
+
+/* ============================================================
+   FIX CARTES LIVRES — hauteur uniforme + auteurs multi-lignes
+   (placé en fin de fichier pour primer dans la cascade)
+   ============================================================ */
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 14px;
+    align-items: stretch;
+}
+
+.book-card {
+    width: auto;
+    height: 430px;              /* hauteur fixe → toutes les cartes alignées */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 12px;
+}
+
+.book-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    flex-shrink: 0;             /* l'image ne se compresse pas */
+}
+
+/* Titre : 2 lignes max */
+.book-card .book-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 4px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.4em;
+}
+
+/* Auteurs : 2 lignes max (gère plusieurs auteurs proprement) */
+.book-card .book-author {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.3;
+    margin-bottom: 6px;
+
+    white-space: normal;       /* annule le nowrap qui débordait */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.1em;         /* hauteur stable même avec 1 seul auteur */
+}
+
+/* Les boutons restent collés en bas → alignement parfait */
+.book-card .btn-description {
+    margin-top: auto;
+}

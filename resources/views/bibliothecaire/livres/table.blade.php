@@ -57,15 +57,19 @@
 
         <div class="dropdown-menu-book">
 
-            <button class="borrow">
-                <i class="fas fa-book me-2"></i>
-                Emprunter
-            </button>
+            <button class="borrow" type="button"
+            onclick="openBorrowModal('{{ $exemplaire->id }}', '{{ $exemplaire->code }}')"
+            @disabled($exemplaire->statut === 'Emprunté')>
+            <i class="fas fa-book me-2"></i>
+            Emprunter
+        </button>
 
-            <button class="return">
-                <i class="fas fa-undo me-2"></i>
-                Retourner
-            </button>
+        <button class="return" type="button"
+            onclick="returnBook('{{ route('bibliothecaire.emprunts.retour', $exemplaire->id) }}')"
+            @disabled($exemplaire->statut !== 'Emprunté')>
+            <i class="fas fa-undo me-2"></i>
+            Retourner
+        </button>
 
        <button class="edit"
         onclick="openEditModal('{{ $livre->cote }}')">

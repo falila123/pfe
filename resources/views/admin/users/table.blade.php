@@ -103,7 +103,7 @@
                                 {{-- 3 DOTS --}}
                                 <div
                                     class="menu-dots"
-                                    onclick="toggleMenu(this)"
+                                    onclick="toggleUserMenu(this)"
                                 >
 
                                     <i class="fas fa-ellipsis-h"></i>
@@ -160,6 +160,24 @@
                                     }}
 
                                 </button>
+
+                                    {{-- RESET PASSWORD --}}
+                                    <button
+                                        type="button"
+                                        class="edit open-reset-modal"
+
+                                        data-id="{{ $user->id }}"
+                                        data-name="{{ $user->name }}"
+
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#resetPasswordModal"
+                                    >
+
+                                        <i class="fas fa-key"></i>
+
+                                        Réinitialiser MDP
+
+                                    </button>
 
                                 </div>
 
@@ -271,11 +289,72 @@
 </div>
 
 {{-- =========================
+     RESET PASSWORD MODAL
+========================= --}}
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form method="POST" id="resetPasswordForm">
+
+                @csrf
+                @method('PATCH')
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-key"></i> Réinitialiser le mot de passe
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        Définir un nouveau mot de passe pour
+                        <strong id="resetUserName"></strong>.
+                    </p>
+
+                    <div class="mb-2">
+                        <label class="form-label">Nouveau mot de passe</label>
+                        <input
+                            type="text"
+                            name="password"
+                            class="form-control"
+                            minlength="4"
+                            required
+                        >
+                        <small class="text-muted">
+                            Communiquez-le à l'utilisateur ; il pourra le modifier ensuite depuis son profil.
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Réinitialiser
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{-- =========================
      DROPDOWN SCRIPT
 ========================= --}}
 <script>
 
-    function toggleMenu(element){
+    function toggleUserMenu(element){
 
         document
             .querySelectorAll(".dropdown-menu-user")
@@ -438,6 +517,27 @@ document
         });
 
     });
-    
+
+/*
+|--------------------------------------------------------------------------
+| RESET PASSWORD MODAL
+|--------------------------------------------------------------------------
+*/
+
+document
+    .querySelectorAll('.open-reset-modal')
+    .forEach(button => {
+
+        button.addEventListener('click', function () {
+
+            document.getElementById('resetPasswordForm').action =
+                '/admin/users/' + this.dataset.id + '/reset-password';
+
+            document.getElementById('resetUserName').innerText =
+                this.dataset.name;
+        });
+
+    });
+
 </script>
 

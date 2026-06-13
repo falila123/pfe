@@ -222,6 +222,31 @@ class AdminUserController extends Controller
     |--------------------------------------------------------------------------
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | RESET PASSWORD
+    |--------------------------------------------------------------------------
+    */
+
+    public function resetPassword(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'password' => 'required|min:4',
+        ], [
+            'password.required' => 'Veuillez saisir un nouveau mot de passe.',
+            'password.min'      => 'Le mot de passe doit contenir au moins 4 caractères.',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($data['password']),
+        ]);
+
+        return back()->with(
+            'success',
+            "Mot de passe de {$user->name} réinitialisé avec succès."
+        );
+    }
+
     public function toggleStatus(User $user)
 {
     // On inverse le statut

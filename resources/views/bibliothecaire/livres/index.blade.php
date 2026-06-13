@@ -34,6 +34,7 @@
 
     // ✅ VARIABLE GLOBALE
     window.livresData = @json($livresFormatted);
+    window.etudiantsData = @json($etudiants);
     window.auteursData = @json($auteurs);
     console.log("auteursData chargé:", window.auteursData);
     console.log("livresData chargé:", window.livresData);
@@ -89,6 +90,9 @@
 @include('bibliothecaire.livres.partials.add-modal')
 
 @include('bibliothecaire.livres.partials.edit-modal')
+
+@include('bibliothecaire.livres.partials.borrow-modal')
+
 
 <div class="modal fade" id="bookDescriptionModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -213,6 +217,52 @@ function openAddModal()
     modal.show();
 }
 
+function openBorrowModal(id, code){
+    document.getElementById('borrowExemplaireId').value = id;
+    document.getElementById('borrowExemplaireCode').value = code;
+    document.getElementById('studentCode').value = '';
+    document.getElementById('borrowDuration').value = '';
+    document.getElementById('studentInfo').innerHTML = '';
+    document.getElementById('returnDate').value = '';
+
+    const today = new Date();
+    document.getElementById('borrowDate').value = today.toLocaleDateString('fr-FR');
+
+    new bootstrap.Modal(document.getElementById('borrowModal')).show();
+}
+
+function computeReturnDate(){
+    const duration = parseInt(document.getElementById('borrowDuration').value);
+    const out = document.getElementById('returnDate');
+
+    if(!duration || duration <= 0){ out.value = ''; return; }
+
+    const d = new Date();
+    d.setDate(d.getDate() + duration);
+    out.value = d.toLocaleDateString('fr-FR');
+}
+
+function verifyStudent(){
+    const matricule = document.getElementById('studentCode').value.trim();
+    const info = document.getElementById('studentInfo');
+
+    if(!matricule){ info.innerHTML = ''; return; }
+
+    const student = (window.etudiantsData || []).find(
+        u => u.matricule === matricule
+    );
+
+    info.innerHTML = student
+        ? `<span style="color:#16a34a;font-weight:600;">✓ Étudiant trouvé : ${student.name}</span>`
+        : `<span style="color:#dc2626;font-weight:600;">✗ Aucun étudiant trouvé</span>`;
+}
+
+function returnBook(url){
+    const form = document.getElementById('returnForm');
+    form.action = url;
+    form.submit();
+}
+
 // ✅ FONCTION showDescription
 window.showDescription = function (code) {
     const book = window.livresData.find(b => b.cote === code);
@@ -267,5 +317,11 @@ document.addEventListener('DOMContentLoaded', function () {
     @csrf
     @method('DELETE')
 </form>
+
+<form id="returnForm" method="POST" style="display:none;">
+    @csrf
+    @method('PATCH')
+</form>
+
 
 @endsection

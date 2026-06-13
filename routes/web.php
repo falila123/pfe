@@ -4,10 +4,23 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LivreController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\StatistiqueController as AdminStatistiqueController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmpruntController;
+use App\Http\Controllers\Etudiant\CatalogueController;
+use App\Http\Controllers\Etudiant\DemandeController;
+use App\Http\Controllers\Bibliothecaire\DemandeController as BiblioDemandeController;
+use App\Http\Controllers\Etudiant\EmpruntController as EtudiantEmpruntController;
+use App\Http\Controllers\Etudiant\DashboardController as EtudiantDashboardController;
+use App\Http\Controllers\Etudiant\NotificationController as EtudiantNotificationController;
+use App\Http\Controllers\Bibliothecaire\DashboardController as BiblioDashboardController;
+use App\Http\Controllers\Bibliothecaire\StatistiqueController as BiblioStatistiqueController;
+use App\Http\Controllers\Administration\DashboardController as AdministrationDashboardController;
+use App\Http\Controllers\Administration\StatistiqueController as AdministrationStatistiqueController;
+
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 /*
@@ -50,17 +63,50 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:Administrateur')
         ->name('admin.dashboard');
 
-    Route::view('/bibliothecaire/dashboard', 'bibliothecaire.dashboard')
+    Route::get('/bibliothecaire/dashboard', [BiblioDashboardController::class, 'index'])
         ->middleware('role:Bibliothécaire')
         ->name('bibliothecaire.dashboard');
 
-    Route::view('/etudiant/dashboard', 'etudiant.dashboard')
+    Route::get('/etudiant/dashboard', [EtudiantDashboardController::class, 'index'])
         ->middleware('role:Étudiant')
         ->name('etudiant.dashboard');
 
-    Route::view('/administration/dashboard', 'administration.dashboard')
+    Route::get('/administration/dashboard', [AdministrationDashboardController::class, 'index'])
         ->middleware('role:Administration')
         ->name('administration.dashboard');
+
+    Route::get('/administration/statistiques', [AdministrationStatistiqueController::class, 'index'])
+        ->middleware('role:Administration')
+        ->name('administration.statistiques.index');
+
+/*
+|--------------------------------------------------------------------------
+| ÉTUDIANT
+|--------------------------------------------------------------------------
+*/
+Route::prefix('etudiant')
+    ->middleware('role:Étudiant')
+    ->name('etudiant.')
+    ->group(function () {
+
+        Route::get('/catalogue', [CatalogueController::class, 'index'])
+            ->name('catalogue');
+
+        Route::get('/mes-demandes', [DemandeController::class, 'index'])
+            ->name('demandes.index');
+
+        Route::get('/mes-emprunts', [EtudiantEmpruntController::class, 'index'])
+            ->name('emprunts.index');
+
+        Route::get('/notifications', [EtudiantNotificationController::class, 'index'])
+            ->name('notifications.index');
+
+        Route::post('/demandes', [DemandeController::class, 'store'])
+            ->name('demandes.store');
+
+        Route::delete('/demandes/{demande}', [DemandeController::class, 'destroy'])
+            ->name('demandes.destroy');
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -80,6 +126,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::patch('/users/{user}/toggle', [AdminUserController::class, 'toggleStatus'])
             ->name('admin.users.toggle');
+
+        Route::patch('/users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])
+            ->name('admin.users.resetPassword');
+
+        Route::get('/statistiques', [AdminStatistiqueController::class, 'index'])
+            ->name('admin.statistiques.index');
     });
 
     /*
@@ -94,10 +146,24 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/livres', [LivreController::class, 'index'])
                 ->name('livres.index');
+                Route::get('/demandes', [BiblioDemandeController::class, 'index'])
+                 ->name('demandes.index');
+                Route::patch('/demandes/{demande}/accepter', [BiblioDemandeController::class, 'accepter'])
+                 ->name('demandes.accepter');
+                Route::patch('/demandes/{demande}/refuser', [BiblioDemandeController::class, 'refuser'])
+                 ->name('demandes.refuser');
                 Route::post('/auteurs', [LivreController::class, 'storeAuteur'])
                  ->name('bibliothecaire.auteurs.store');
                  Route::post('/livres/{livre}/exemplaires', [LivreController::class, 'addExemplaire'])
                 ->name('livres.exemplaires.store');
+                Route::get('/emprunts/suivi', [EmpruntController::class, 'suivi'])
+                 ->name('emprunts.suivi');
+                 Route::post('/emprunts', [EmpruntController::class, 'store'])
+                ->name('emprunts.store');
+                Route::patch('/emprunts/{exemplaire}/retour', [EmpruntController::class, 'retour'])
+                    ->name('emprunts.retour');
+                Route::get('/statistiques', [BiblioStatistiqueController::class, 'index'])
+                 ->name('statistiques.index');
 
         });
 

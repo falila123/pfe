@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Bibliothèque - Étudiant')</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -60,6 +62,31 @@
             background: rgba(255,255,255,0.2);
         }
 
+        .sidebar a {
+            align-items: center;
+        }
+
+        .sidebar a i {
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .sidebar-brand h4 {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-role {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .logout-btn {
             width: 90%;
             margin-left: 10px;
@@ -108,29 +135,50 @@
 
 <div class="sidebar">
 
-    <h4><i class="fas fa-book-open"></i> Biblio</h4>
+    <div class="sidebar-brand">
+        <h4><i class="fas fa-book-open"></i> Bibliothèque</h4>
+        <span class="sidebar-role">Espace {{ auth()->user()->role }}</span>
+    </div>
 
     {{-- ================= ÉTUDIANT ================= --}}
-    @if(auth()->user()->role === 'Étudiant')
+   @if(auth()->user()->role === 'Étudiant')
 
-        <a href="{{ route('etudiant.dashboard') }}"
-           class="{{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">
-            <i class="fas fa-home"></i> Accueil
-        </a>
+    <a href="{{ route('etudiant.dashboard') }}"
+       class="{{ request()->routeIs('etudiant.dashboard') ? 'active' : '' }}">
+        <i class="fas fa-home"></i> Tableau de bord
+    </a>
 
-        <a href="#">
-            <i class="fas fa-book"></i> Catalogue des livres
-        </a>
+    <a href="{{ route('etudiant.catalogue') }}"
+       class="{{ request()->routeIs('etudiant.catalogue') ? 'active' : '' }}">
+        <i class="fas fa-book"></i> Catalogue des livres
+    </a>
 
-        <a href="#">
-            <i class="fas fa-clock"></i> Mes emprunts
-        </a>
+    <a href="{{ route('etudiant.demandes.index') }}"
+       class="{{ request()->routeIs('etudiant.demandes.index') ? 'active' : '' }}">
+        <i class="fas fa-paper-plane"></i> Mes demandes
+    </a>
 
-        <a href="#">
-            <i class="fas fa-user"></i> Mon profil
-        </a>
+    <a href="{{ route('etudiant.emprunts.index') }}"
+       class="{{ request()->routeIs('etudiant.emprunts.index') ? 'active' : '' }}">
+        <i class="fas fa-clock"></i> Mes emprunts
+    </a>
 
-    @endif
+    <a href="{{ route('etudiant.notifications.index') }}"
+       class="{{ request()->routeIs('etudiant.notifications.index') ? 'active' : '' }}">
+        <i class="fas fa-bell"></i> Notifications
+        @php($nbNonLues = auth()->user()->unreadNotifications->count())
+        @if($nbNonLues > 0)
+            <span class="badge bg-white text-primary rounded-pill ms-auto">{{ $nbNonLues }}</span>
+        @endif
+    </a>
+
+    <a href="{{ route('profile.edit') }}"
+       class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+        <i class="fas fa-user"></i> Mon profil
+    </a>
+
+@endif
+
 
     {{-- ================= LOGOUT ================= --}}
     <form method="POST" action="{{ route('logout') }}" style="margin-top:auto;">

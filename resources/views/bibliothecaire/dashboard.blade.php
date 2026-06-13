@@ -1,6 +1,6 @@
 @extends('layouts.app-bibliothecaire')
 
-@section('title', 'Dashboard Bibliothécaire')
+@section('title', 'Tableau de bord')
 
 @section('content')
 
@@ -20,9 +20,7 @@
             <div class="stat-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stat-number">
-                {{ $totalBooks ?? 0 }}
-            </div>
+            <div class="stat-number">{{ $totalBooks ?? 0 }}</div>
             <div>Total Livres</div>
         </div>
     </div>
@@ -33,9 +31,7 @@
             <div class="stat-icon">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <div class="stat-number">
-                {{ $availableBooks ?? 0 }}
-            </div>
+            <div class="stat-number">{{ $availableBooks ?? 0 }}</div>
             <div>Disponibles</div>
         </div>
     </div>
@@ -46,9 +42,7 @@
             <div class="stat-icon">
                 <i class="fas fa-book-reader"></i>
             </div>
-            <div class="stat-number">
-                {{ $borrowedBooks ?? 0 }}
-            </div>
+            <div class="stat-number">{{ $borrowedBooks ?? 0 }}</div>
             <div>Empruntés</div>
         </div>
     </div>
@@ -59,9 +53,7 @@
             <div class="stat-icon">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <div class="stat-number">
-                {{ $lateBooks ?? 0 }}
-            </div>
+            <div class="stat-number">{{ $lateBooks ?? 0 }}</div>
             <div>Retards</div>
         </div>
     </div>
@@ -75,25 +67,57 @@
         <h6 class="mb-0">
             <i class="fas fa-bell"></i> Activité récente
         </h6>
-
-        <span class="text-muted" style="font-size:0.85rem;">
-            Temps réel (backend futur)
-        </span>
     </div>
 
     <div class="card p-3">
 
-        <p class="text-muted mb-2">
-            • Dernières activités seront chargées depuis la base de données
-        </p>
+        {{-- DERNIER EMPRUNT --}}
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fas fa-book text-primary"></i>
+            @if($dernierEmprunt)
+                <span>
+                    Dernier emprunt :
+                    <strong>{{ $dernierEmprunt->livre->titre ?? '—' }}</strong>
+                    par {{ $dernierEmprunt->user->name ?? '—' }}
+                    <small class="text-muted">
+                        ({{ $dernierEmprunt->date_emprunt?->format('d/m/Y') }})
+                    </small>
+                </span>
+            @else
+                <span class="text-muted">Aucun emprunt en cours.</span>
+            @endif
+        </div>
 
-        <p class="text-muted mb-2">
-            • Emprunts récents, retours, retards
-        </p>
+        {{-- DERNIER RETOUR --}}
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fas fa-undo text-success"></i>
+            @if($dernierRetour)
+                <span>
+                    Dernier retour :
+                    <strong>{{ $dernierRetour->livre->titre ?? '—' }}</strong>
+                    par {{ $dernierRetour->user->name ?? '—' }}
+                    <small class="text-muted">
+                        ({{ $dernierRetour->date_retour_effective?->format('d/m/Y') }})
+                    </small>
+                </span>
+            @else
+                <span class="text-muted">Aucun retour enregistré.</span>
+            @endif
+        </div>
 
-        <p class="text-muted mb-0">
-            • Notifications bibliothécaire
-        </p>
+        {{-- DEMANDES EN ATTENTE --}}
+        <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-hourglass-half text-warning"></i>
+            @if($demandesEnAttente > 0)
+                <span>
+                    <strong>{{ $demandesEnAttente }}</strong>
+                    demande(s) en attente de validation —
+                    <a href="{{ route('bibliothecaire.demandes.index') }}">Traiter les demandes</a>
+                </span>
+            @else
+                <span class="text-muted">Aucune demande en attente.</span>
+            @endif
+        </div>
 
     </div>
 

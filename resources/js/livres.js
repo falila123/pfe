@@ -5,9 +5,8 @@ console.log('livres.js chargé');
 ========================= */
 
 function initLivres() {
-    renderKPI();
-    renderCards();
-    renderTable();
+    // ℹ️ KPI, cartes et tableau sont désormais rendus côté serveur (Blade).
+    // On ne réinitialise plus rien ici (l'ancien renderKPI forçait les KPI à 0).
 }
 
 function renderKPI() {

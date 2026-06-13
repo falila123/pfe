@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Bibliothèque')</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -56,6 +58,31 @@
             background: rgba(255,255,255,0.2);
         }
 
+        .sidebar a {
+            align-items: center;
+        }
+
+        .sidebar a i {
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .sidebar-brand h4 {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-role {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .logout-btn {
             width: 90%;
             margin-left: 10px;
@@ -104,14 +131,17 @@
 
 <div class="sidebar">
 
-    <h4><i class="fas fa-book-open"></i> Biblio</h4>
+    <div class="sidebar-brand">
+        <h4><i class="fas fa-book-open"></i> Bibliothèque</h4>
+        <span class="sidebar-role">Espace {{ auth()->user()->role }}</span>
+    </div>
 
     {{-- ================= ADMIN ================= --}}
     @if(auth()->user()->role === 'Administrateur')
 
         <a href="{{ route('admin.dashboard') }}"
            class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-            <i class="fas fa-home"></i> Dashboard
+            <i class="fas fa-home"></i> Tableau de bord
         </a>
 
         <a href="{{ route('admin.users.index') }}"
@@ -119,8 +149,14 @@
             <i class="fas fa-users"></i> Utilisateurs
         </a>
 
-        <a href="#">
+        <a href="{{ route('admin.statistiques.index') }}"
+           class="{{ request()->routeIs('admin.statistiques.*') ? 'active' : '' }}">
             <i class="fas fa-chart-line"></i> Statistiques
+        </a>
+
+        <a href="{{ route('profile.edit') }}"
+           class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
+            <i class="fas fa-user"></i> Mon profil
         </a>
 
     @endif

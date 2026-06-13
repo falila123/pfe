@@ -21,6 +21,11 @@
     </div>
 
     <div class="info-label">
+        Sous-catégorie:
+        <span class="info-badge">{{ $livre->sous_categorie_dewey ?? '—' }}</span>
+    </div>
+
+    <div class="info-label">
         Type:
         <span class="info-badge">{{ $typeLabels[$livre->type_livre] ?? $livre->type_livre }}</span>
     </div>

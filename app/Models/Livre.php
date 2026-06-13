@@ -32,4 +32,9 @@ public function emprunts()
 {
     return $this->hasMany(Emprunt::class);
 }
+public function demandes()
+{
+    return $this->hasMany(Demande::class);
+}
+
 }

@@ -1,0 +1,145 @@
+/* ===================== CATALOGUE ÉTUDIANT ===================== */
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.catalogue-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.catalogue-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.catalogue-cover {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+    background: #f1f5f9;
+}
+
+.catalogue-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.catalogue-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.25;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.3em;
+}
+
+.catalogue-author {
+    font-size: 0.78rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.catalogue-category {
+    align-self: flex-start;
+    background: #e0e7ff;
+    color: #3730a3;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.catalogue-status {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.catalogue-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.catalogue-status.dispo {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.catalogue-status.indispo {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.catalogue-action {
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.catalogue-action form {
+    width: 100%;
+}
+
+.catalogue-btn {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.catalogue-btn.demander {
+    background: #2563eb;
+    color: #fff;
+}
+
+.catalogue-btn.demander:hover {
+    background: #1d4ed8;
+}
+
+.catalogue-btn.attente {
+    background: #fef3c7;
+    color: #b45309;
+    cursor: default;
+}
+
+.catalogue-btn.indisponible {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}

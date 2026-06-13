@@ -2,6 +2,10 @@
 @import "./admin/dashboard.css";
 @import "./admin/users.css";
 @import "./bibliothecaire/livres.css";
+@import "./bibliothecaire/emprunts.css";
+@import "./bibliothecaire/statistiques.css";
+@import "./etudiant/catalogue.css";
+
 
 @tailwind base;
 @tailwind components;

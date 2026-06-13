@@ -7,6 +7,8 @@ use App\Models\Livre;
 use App\Models\Auteur;
 use App\Models\Exemplaire;
 use Illuminate\Validation\Rule;
+use App\Models\User;
+
 
 class LivreController extends Controller
 {
@@ -307,16 +309,62 @@ public function destroyExemplaire($id)
     return back()->with('success', 'Exemplaire supprimé avec succès.');
 }
 
-  public function index()
+  public function index(Request $request)
 {
-    $livres = Livre::with('auteurs', 'exemplaires')->latest()->get();
-    $auteurs = Auteur::all();
+    $query = Livre::with('auteurs', 'exemplaires');
+
+    // 🔎 Recherche (titre, ISBN, cote ou auteur)
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('titre', 'like', "%{$search}%")
+              ->orWhere('isbn', 'like', "%{$search}%")
+              ->orWhere('cote', 'like', "%{$search}%")
+              ->orWhereHas('auteurs', function ($a) use ($search) {
+                  $a->where('nom', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    // 🎚️ Filtre catégorie
+    if ($request->filled('categorie')) {
+        $query->where('categorie', $request->categorie);
+    }
+
+    $livres   = $query->latest()->get();
+    $auteurs  = Auteur::all();
+
+    // 👇 pour le verifyStudent live dans la modale d'emprunt
+    $etudiants = User::where('role', 'Étudiant')
+        ->get(['id', 'name', 'matricule']);
+
+    // 🗂️ Catégories existantes (pour le menu déroulant du filtre)
+    $categories = Livre::whereNotNull('categorie')
+        ->distinct()
+        ->orderBy('categorie')
+        ->pluck('categorie');
+
+    // 📊 KPI (sur l'ensemble de la collection, indépendamment des filtres)
+    $totalLivres       = Livre::count();
+    $totalExemplaires  = Exemplaire::count();
+    $livresDisponibles = Livre::whereHas('exemplaires', function ($q) {
+        $q->where('statut', 'Disponible');
+    })->count();
+    $livresIndisponibles = $totalLivres - $livresDisponibles;
 
     return view('bibliothecaire.livres.index', [
-    'livres' => $livres,
-    'auteurs' => $auteurs,
-    'typeLabels' => $this->typeLabels,
-    'langueLabels' => $this->langueLabels,
-]);
+        'livres'              => $livres,
+        'auteurs'             => $auteurs,
+        'etudiants'           => $etudiants,
+        'categories'          => $categories,
+        'typeLabels'          => $this->typeLabels,
+        'langueLabels'        => $this->langueLabels,
+        'totalLivres'         => $totalLivres,
+        'totalExemplaires'    => $totalExemplaires,
+        'livresDisponibles'   => $livresDisponibles,
+        'livresIndisponibles' => $livresIndisponibles,
+    ]);
 }
+
 }
