@@ -6,7 +6,7 @@
 
 <div class="page-header">
     <h1><i class="fas fa-clock"></i> Mes emprunts</h1>
-    <p>Vos livres empruntés et leur date de retour</p>
+    <p>Restez informé sur l'état de vos emprunts</p>
 </div>
 
 {{-- ALERTES --}}
@@ -14,8 +14,14 @@
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
 
-@include('etudiant.emprunts.stats')
+@include('etudiant.emprunts.filters')
 
 @include('etudiant.emprunts.table')
+
+@if($emprunts->hasPages())
+    <div class="mt-3">
+        {{ $emprunts->links() }}
+    </div>
+@endif
 
 @endsection

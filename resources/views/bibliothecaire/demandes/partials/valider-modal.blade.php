@@ -13,25 +13,10 @@
 
         <div class="modal-body">
 
-          <p class="mb-3">
+          <p class="mb-0">
             Vous validez la demande de <strong id="validerEtudiant"></strong>
             pour le livre <strong id="validerLivre"></strong>.
           </p>
-
-          <p class="text-muted small">
-            <i class="fas fa-info-circle"></i>
-            Un exemplaire disponible sera attribué automatiquement.
-          </p>
-
-          <div class="mb-2">
-            <label class="form-label">Durée d'emprunt (jours)</label>
-            <input type="number"
-                   name="duree"
-                   class="form-control"
-                   min="1"
-                   placeholder="Ex: 14"
-                   required>
-          </div>
 
         </div>
 
@@ -40,7 +25,7 @@
             Annuler
           </button>
           <button type="submit" class="btn btn-success">
-            Confirmer l'emprunt
+            Valider (réserver 24 h)
           </button>
         </div>
 

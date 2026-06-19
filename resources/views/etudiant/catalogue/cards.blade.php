@@ -19,11 +19,13 @@
 
             <span class="catalogue-category">{{ $livre->categorie }}</span>
 
-            @if($livre->nb_disponibles > 0)
-                <span class="catalogue-status dispo">Disponible</span>
-            @else
-                <span class="catalogue-status indispo">Indisponible</span>
-            @endif
+            <button type="button" class="catalogue-desc-btn"
+                    onclick="showBookDesc(this)"
+                    data-titre="{{ $livre->titre }}"
+                    data-auteur="{{ $livre->auteurs->pluck('nom')->join(', ') }}"
+                    data-desc="{{ $livre->description }}">
+                <i class="fas fa-eye"></i> Voir la description
+            </button>
 
             <div class="catalogue-action">
 

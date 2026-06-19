@@ -1,8 +1,8 @@
 <form method="GET"
       action="{{ route('bibliothecaire.demandes.index') }}"
-      class="search-add-card d-flex align-items-center gap-2 mb-4 p-3">
+      class="d-flex align-items-center gap-2 mb-4">
 
-    <select name="statut" class="form-select" style="max-width:220px;">
+    <select name="statut" class="form-select" style="flex: 0 0 240px;">
         <option value="">Tous les statuts</option>
         <option value="En attente" @selected(request('statut') === 'En attente')>En attente</option>
         <option value="Acceptée"   @selected(request('statut') === 'Acceptée')>Acceptées</option>

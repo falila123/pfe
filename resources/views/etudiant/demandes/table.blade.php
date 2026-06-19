@@ -31,8 +31,23 @@
                     <td>
                         @if($demande->statut === 'En attente')
                             <span class="badge bg-warning text-dark">En attente</span>
+
                         @elseif($demande->statut === 'Acceptée')
-                            <span class="badge bg-success">Acceptée</span>
+                            <span class="badge bg-success">Réservé</span>
+                            @if($demande->date_limite_retrait)
+                                <div class="text-muted small mt-1">
+                                    <i class="fas fa-clock"></i>
+                                    À récupérer avant le {{ $demande->date_limite_retrait->format('d/m/Y à H:i') }}
+                                </div>
+                            @endif
+
+                        @elseif($demande->statut === 'Récupérée')
+                            <span class="badge bg-info text-dark">Récupérée</span>
+
+                        @elseif($demande->statut === 'Expirée')
+                            <span class="badge bg-secondary">Expirée</span>
+                            <div class="text-muted small mt-1">Livre non récupéré à temps</div>
+
                         @else
                             <span class="badge bg-danger">Refusée</span>
                             @if($demande->motif_refus)
@@ -47,15 +62,12 @@
                     <td>
                         @if($demande->statut === 'En attente')
 
-                            <form method="POST"
-                                  action="{{ route('etudiant.demandes.destroy', $demande->id) }}"
-                                  onsubmit="return confirm('Annuler cette demande ?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                    <i class="fas fa-times"></i> Annuler
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1"
+                                    onclick="confirmAnnulerDemande('{{ route('etudiant.demandes.destroy', $demande->id) }}')">
+                                <i class="fas fa-times"></i>
+                                <span>Annuler</span>
+                            </button>
 
                         @else
                             <span class="text-muted">—</span>

@@ -6,15 +6,22 @@
            name="search"
            value="{{ request('search') }}"
            class="form-control"
-           placeholder="🔎 Rechercher un livre ou un auteur...">
+           style="flex: 0 1 240px;"
+           placeholder="🔎 Titre ou auteur…">
 
-    <select name="categorie" class="form-select">
+    <select name="categorie" class="form-select" style="flex: 1 1 auto;">
         <option value="">Toutes les catégories</option>
         @foreach($categories as $cat)
             <option value="{{ $cat }}" @selected(request('categorie') === $cat)>
                 {{ $cat }}
             </option>
         @endforeach
+    </select>
+
+    <select name="disponibilite" class="form-select" style="flex: 1 1 auto;">
+        <option value="">Toute disponibilité</option>
+        <option value="Disponible" @selected(request('disponibilite') === 'Disponible')>Disponible</option>
+        <option value="Indisponible" @selected(request('disponibilite') === 'Indisponible')>Indisponible</option>
     </select>
 
     <button type="submit" class="btn btn-primary">

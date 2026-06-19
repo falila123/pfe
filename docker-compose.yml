@@ -1,0 +1,44 @@
+services:
+
+  # ===================== Application Laravel =====================
+  app:
+    build: .
+    container_name: biblio_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: "Bibliotheque"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8000"
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: bibliotheque
+      DB_USERNAME: biblio
+      DB_PASSWORD: secret
+
+      # Récupérée depuis ton fichier .env (substitution Docker Compose)
+      GOOGLE_BOOKS_API_KEY: "${GOOGLE_BOOKS_API_KEY}"
+    depends_on:
+      - db
+
+  # ===================== Base de données MySQL =====================
+  db:
+    image: mysql:8.0
+    container_name: biblio_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: bibliotheque
+      MYSQL_USER: biblio
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"   # 3307 côté hôte pour éviter le conflit avec MySQL de XAMPP (3306)
+    volumes:
+      - biblio_db_data:/var/lib/mysql
+
+volumes:
+  biblio_db_data:

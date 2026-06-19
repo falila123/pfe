@@ -5,52 +5,15 @@
 @section('content')
 
 <div class="page-header">
-    <h1><i class="fas fa-chart-line"></i> Statistiques — Utilisateurs</h1>
-    <p>Analyse des comptes et des rôles</p>
+    <h1><i class="fas fa-chart-line"></i> Statistiques</h1>
+    <p>Vue d'ensemble de l'activité de la bibliothèque</p>
 </div>
 
-{{-- ================= KPI ================= --}}
-<div class="row g-4 mb-4">
-
-    <div class="col-md-3">
-        <div class="stat-card primary">
-            <i class="fas fa-users"></i>
-            <div class="stat-number">{{ $totalUsers }}</div>
-            <div>Total utilisateurs</div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="stat-card success">
-            <i class="fas fa-user-check"></i>
-            <div class="stat-number">{{ $actifs }}</div>
-            <div>Actifs</div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="stat-card danger">
-            <i class="fas fa-user-slash"></i>
-            <div class="stat-number">{{ $desactives }}</div>
-            <div>Désactivés</div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="stat-card info">
-            <i class="fas fa-user-graduate"></i>
-            <div class="stat-number">{{ $etudiants }}</div>
-            <div>Étudiants</div>
-        </div>
-    </div>
-
-</div>
-
-{{-- ================= GRAPHIQUE + TABLEAU ================= --}}
+{{-- ================= GRAPHIQUES ================= --}}
 <div class="row g-4">
 
     {{-- Donut par rôle --}}
-    <div class="col-md-5">
+    <div class="col-md-6">
         <div class="chart-section">
             <h5><i class="fas fa-chart-pie"></i> Répartition par rôle</h5>
             <div class="chart-container">
@@ -59,8 +22,21 @@
         </div>
     </div>
 
-    {{-- Tableau par rôle --}}
-    <div class="col-md-7">
+    {{-- Donut par sexe --}}
+    <div class="col-md-6">
+        <div class="chart-section">
+            <h5><i class="fas fa-venus-mars"></i> Répartition par sexe</h5>
+            <div class="chart-container">
+                <canvas id="sexeChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{-- ================= TABLEAU PAR RÔLE ================= --}}
+<div class="row g-4 mt-1">
+    <div class="col-12">
         <div class="table-section">
             <h5 class="mb-3"><i class="fas fa-user-tag"></i> Utilisateurs par rôle</h5>
 
@@ -88,7 +64,6 @@
             </table>
         </div>
     </div>
-
 </div>
 
 {{-- ================= CHART.JS ================= --}}
@@ -100,7 +75,26 @@ new Chart(document.getElementById('rolesChart').getContext('2d'), {
         labels: @json($parRole->pluck('role')),
         datasets: [{
             data: @json($parRole->pluck('total')),
-            backgroundColor: ['#2563eb','#16a34a','#f59e0b','#dc2626','#ec4899'],
+            backgroundColor: ['#4f46e5','#16a34a','#f59e0b','#dc2626','#ec4899'],
+            borderColor: '#fff',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+    }
+});
+
+// Donut : répartition par sexe
+new Chart(document.getElementById('sexeChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+        labels: @json($sexeLabels),
+        datasets: [{
+            data: @json($sexeValues),
+            backgroundColor: ['#4f46e5', '#ec4899', '#94a3b8'],
             borderColor: '#fff',
             borderWidth: 2
         }]

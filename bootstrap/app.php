@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
 
+        // Force le changement de mot de passe à la 1ʳᵉ connexion (toutes les pages web)
+        $middleware->web(append: [
+            \App\Http\Middleware\ForcePasswordChange::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

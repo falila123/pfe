@@ -11,6 +11,9 @@ class CatalogueController extends Controller
 {
     public function index(Request $request)
     {
+        // 🕒 Relibérer les exemplaires des réservations 24h expirées
+        Demande::expirerReservationsDepassees();
+
         $query = Livre::with(['auteurs', 'exemplaires'])
             ->withCount([
                 'exemplaires as nb_disponibles' => function ($q) {
@@ -33,6 +36,15 @@ class CatalogueController extends Controller
         // 🎚️ Filtre catégorie
         if ($request->filled('categorie')) {
             $query->where('categorie', $request->categorie);
+        }
+
+        // 🎚️ Filtre disponibilité
+        if ($request->filled('disponibilite')) {
+            if ($request->disponibilite === 'Disponible') {
+                $query->whereHas('exemplaires', fn ($q) => $q->where('statut', 'Disponible'));
+            } elseif ($request->disponibilite === 'Indisponible') {
+                $query->whereDoesntHave('exemplaires', fn ($q) => $q->where('statut', 'Disponible'));
+            }
         }
 
         $livres = $query->latest()->get();

@@ -1,26 +1,26 @@
-<div class="row g-4 mb-4">
+<div class="kpi-row">
 
-    <div class="col-md-4">
-        <div class="stat-card info">
-            <i class="fas fa-hourglass-half"></i>
-            <div class="stat-number">{{ $enAttente }}</div>
-            <div>En attente</div>
+    <div class="kpi-card">
+        <div class="kpi-ico info"><i class="fas fa-hourglass-half"></i></div>
+        <div>
+            <div class="kpi-val">{{ $enAttente }}</div>
+            <div class="kpi-lab">En attente</div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="stat-card success">
-            <i class="fas fa-check-circle"></i>
-            <div class="stat-number">{{ $acceptees }}</div>
-            <div>Acceptées</div>
+    <div class="kpi-card">
+        <div class="kpi-ico success"><i class="fas fa-check-circle"></i></div>
+        <div>
+            <div class="kpi-val">{{ $acceptees }}</div>
+            <div class="kpi-lab">Acceptées</div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="stat-card danger">
-            <i class="fas fa-times-circle"></i>
-            <div class="stat-number">{{ $refusees }}</div>
-            <div>Refusées</div>
+    <div class="kpi-card">
+        <div class="kpi-ico danger"><i class="fas fa-times-circle"></i></div>
+        <div>
+            <div class="kpi-val">{{ $refusees }}</div>
+            <div class="kpi-lab">Refusées</div>
         </div>
     </div>
 

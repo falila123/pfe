@@ -41,6 +41,17 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | CHANGEMENT DE MOT DE PASSE FORCÉ (1ʳᵉ connexion)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/changer-mot-de-passe', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'show'])
+        ->name('password.change');
+
+    Route::put('/changer-mot-de-passe', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'update'])
+        ->name('password.change.update');
+
+    /*
+    |--------------------------------------------------------------------------
     | PROFILE
     |--------------------------------------------------------------------------
     */
@@ -68,7 +79,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('bibliothecaire.dashboard');
 
     Route::get('/etudiant/dashboard', [EtudiantDashboardController::class, 'index'])
-        ->middleware('role:Étudiant')
+        ->middleware('role:Étudiant,Prof,Fonctionnaire,Externe')
         ->name('etudiant.dashboard');
 
     Route::get('/administration/dashboard', [AdministrationDashboardController::class, 'index'])
@@ -85,7 +96,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('etudiant')
-    ->middleware('role:Étudiant')
+    ->middleware('role:Étudiant,Prof,Fonctionnaire,Externe')
     ->name('etudiant.')
     ->group(function () {
 
@@ -127,9 +138,6 @@ Route::prefix('etudiant')
         Route::patch('/users/{user}/toggle', [AdminUserController::class, 'toggleStatus'])
             ->name('admin.users.toggle');
 
-        Route::patch('/users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])
-            ->name('admin.users.resetPassword');
-
         Route::get('/statistiques', [AdminStatistiqueController::class, 'index'])
             ->name('admin.statistiques.index');
     });
@@ -146,12 +154,16 @@ Route::prefix('etudiant')
 
             Route::get('/livres', [LivreController::class, 'index'])
                 ->name('livres.index');
+                Route::get('/livres/lookup', [LivreController::class, 'lookup'])
+                 ->name('livres.lookup');
                 Route::get('/demandes', [BiblioDemandeController::class, 'index'])
                  ->name('demandes.index');
                 Route::patch('/demandes/{demande}/accepter', [BiblioDemandeController::class, 'accepter'])
                  ->name('demandes.accepter');
                 Route::patch('/demandes/{demande}/refuser', [BiblioDemandeController::class, 'refuser'])
                  ->name('demandes.refuser');
+                Route::patch('/demandes/{demande}/remettre', [BiblioDemandeController::class, 'remettre'])
+                 ->name('demandes.remettre');
                 Route::post('/auteurs', [LivreController::class, 'storeAuteur'])
                  ->name('bibliothecaire.auteurs.store');
                  Route::post('/livres/{livre}/exemplaires', [LivreController::class, 'addExemplaire'])

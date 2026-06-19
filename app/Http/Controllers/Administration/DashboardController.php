@@ -5,20 +5,28 @@ namespace App\Http\Controllers\Administration;
 use App\Http\Controllers\Controller;
 use App\Models\Livre;
 use App\Models\Emprunt;
-use App\Models\User;
+use App\Models\Exemplaire;
+use App\Models\Demande;
 use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalLivres     = Livre::count();
-        $usersActifs     = User::where('status', 'actif')->count();
+        // KPI décisionnels (coup d'œil opérationnel)
         $empruntsEnCours = Emprunt::where('statut', 'En cours')->count();
 
         $retards = Emprunt::where('statut', 'En cours')
             ->whereDate('date_retour_prevue', '<', Carbon::today())
             ->count();
+
+        $demandesEnAttente = Demande::where('statut', 'En attente')->count();
+
+        $totalExemplaires = Exemplaire::count();
+        $dispoExemplaires = Exemplaire::where('statut', 'Disponible')->count();
+        $tauxDispo = $totalExemplaires > 0
+            ? round($dispoExemplaires / $totalExemplaires * 100)
+            : 0;
 
         // 🏆 Top 5 catégories
         $topCategories = Livre::query()
@@ -30,10 +38,10 @@ class DashboardController extends Controller
             ->get();
 
         return view('administration.dashboard', compact(
-            'totalLivres',
-            'usersActifs',
             'empruntsEnCours',
             'retards',
+            'demandesEnAttente',
+            'tauxDispo',
             'topCategories'
         ));
     }

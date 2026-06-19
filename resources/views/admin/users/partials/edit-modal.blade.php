@@ -87,6 +87,18 @@
 
                     <div class="mb-3">
 
+                        <label class="form-label">Sexe</label>
+
+                        <select name="sexe" id="edit_sexe" class="form-select" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Homme">Homme</option>
+                            <option value="Femme">Femme</option>
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
                         <label class="form-label">Rôle</label>
 
                         <select
@@ -96,13 +108,18 @@
                             required
                         >
 
-                            <option value="Étudiant">Étudiant</option>
+                            <optgroup label="Membres">
+                                <option value="Étudiant">Étudiant</option>
+                                <option value="Prof">Prof</option>
+                                <option value="Fonctionnaire">Fonctionnaire</option>
+                                <option value="Externe">Externe</option>
+                            </optgroup>
 
-                            <option value="Bibliothécaire">Bibliothécaire</option>
-
-                            <option value="Administrateur">Administrateur</option>
-
-                            <option value="Administration">Administration</option>
+                            <optgroup label="Personnel">
+                                <option value="Bibliothécaire">Bibliothécaire</option>
+                                <option value="Administrateur">Administrateur</option>
+                                <option value="Administration">Administration</option>
+                            </optgroup>
 
                         </select>
 
@@ -122,6 +139,31 @@
                             id="edit_matricule"
                             class="form-control"
                         >
+
+                    </div>
+
+                    {{-- CHAMPS EXTERNE --}}
+                    <div id="editExterneContainer" style="display:none;">
+
+                        <div class="mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input
+                                type="text"
+                                name="telephone"
+                                id="edit_telephone"
+                                class="form-control"
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">N° pièce d'identité (CIN / passeport)</label>
+                            <input
+                                type="text"
+                                name="numero_piece"
+                                id="edit_numero_piece"
+                                class="form-control"
+                            >
+                        </div>
 
                     </div>
 

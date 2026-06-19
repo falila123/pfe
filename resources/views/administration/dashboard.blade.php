@@ -5,42 +5,42 @@
 @section('content')
 
 <div class="page-header">
-    <h1><i class="fas fa-user-circle fa-lg"></i> Bienvenue {{ auth()->user()->name }}</h1>
-    <p>Vue d'ensemble de l'activité de la bibliothèque</p>
+    <h1><i class="fas fa-house"></i> Bienvenue {{ auth()->user()->name }}</h1>
+    <p>Suivez l'activité de la bibliothèque</p>
 </div>
 
 {{-- ================= KPI ================= --}}
-<div class="row g-4">
+<div class="kpi-row">
 
-    <div class="col-md-3">
-        <div class="stat-card primary">
-            <i class="fas fa-book"></i>
-            <div class="stat-number">{{ $totalLivres }}</div>
-            <div>Catalogue (livres)</div>
+    <div class="kpi-card">
+        <div class="kpi-ico info"><i class="fas fa-exchange-alt"></i></div>
+        <div>
+            <div class="kpi-val">{{ $empruntsEnCours }}</div>
+            <div class="kpi-lab">Emprunts en cours</div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="stat-card success">
-            <i class="fas fa-users"></i>
-            <div class="stat-number">{{ $usersActifs }}</div>
-            <div>Utilisateurs actifs</div>
+    <div class="kpi-card">
+        <div class="kpi-ico danger"><i class="fas fa-clock"></i></div>
+        <div>
+            <div class="kpi-val">{{ $retards }}</div>
+            <div class="kpi-lab">Retards</div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="stat-card info">
-            <i class="fas fa-exchange-alt"></i>
-            <div class="stat-number">{{ $empruntsEnCours }}</div>
-            <div>Emprunts en cours</div>
+    <div class="kpi-card">
+        <div class="kpi-ico warning"><i class="fas fa-hourglass-half"></i></div>
+        <div>
+            <div class="kpi-val">{{ $demandesEnAttente }}</div>
+            <div class="kpi-lab">Demandes en attente</div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="stat-card danger">
-            <i class="fas fa-clock"></i>
-            <div class="stat-number">{{ $retards }}</div>
-            <div>Retards</div>
+    <div class="kpi-card">
+        <div class="kpi-ico success"><i class="fas fa-circle-check"></i></div>
+        <div>
+            <div class="kpi-val">{{ $tauxDispo }}%</div>
+            <div class="kpi-lab">Taux de disponibilité</div>
         </div>
     </div>
 
@@ -54,14 +54,22 @@
 
             <h5 class="mb-3"><i class="fas fa-layer-group"></i> Top catégories</h5>
 
-            @forelse($topCategories as $cat)
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                    <span class="fw-semibold">{{ $cat->categorie }}</span>
-                    <span class="badge bg-primary rounded-pill">{{ $cat->total }} livre(s)</span>
-                </div>
-            @empty
-                <p class="text-muted mb-0">Aucune catégorie.</p>
-            @endforelse
+            @php $variants = ['primary', 'info', 'success', 'warning', 'danger']; @endphp
+            <div class="activity">
+                @forelse($topCategories as $cat)
+                    <div class="activity-item">
+                        <div class="act-ico {{ $variants[$loop->index % count($variants)] }}">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                            <span class="act-title fw-semibold">{{ $cat->categorie }}</span>
+                            <span class="act-sub">{{ $cat->total }} livre(s)</span>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-muted mb-0">Aucune catégorie.</p>
+                @endforelse
+            </div>
 
         </div>
     </div>

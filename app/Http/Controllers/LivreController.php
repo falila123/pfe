@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Livre;
 use App\Models\Auteur;
+use App\Models\Demande;
 use App\Models\Exemplaire;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 
 class LivreController extends Controller
@@ -37,10 +40,14 @@ public function store(Request $request)
     'auteurs' => 'required|array',
     'auteurs.*' => 'exists:auteurs,id',
     'couverture' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+    'couverture_url' => 'nullable|url',
+    'nombre_exemplaires' => 'nullable|integer|min:1|max:50',
 ],
 [
     'isbn.required' => 'Veuillez saisir un ISBN.',
     'isbn.regex' => 'L’ISBN saisi est invalide. Veuillez entrer exactement 10 chiffres.',
+    'nombre_exemplaires.min' => 'Le nombre d’exemplaires doit être au moins 1.',
+    'nombre_exemplaires.max' => 'Le nombre d’exemplaires ne peut pas dépasser 50.',
 ]
 );
 
@@ -66,8 +73,12 @@ public function store(Request $request)
     $couverturePath = null;
 
     if ($request->hasFile('couverture')) {
+        // Upload manuel prioritaire
         $couverturePath = $request->file('couverture')
             ->store('couvertures', 'public');
+    } elseif ($request->filled('couverture_url')) {
+        // Sinon, téléchargement automatique depuis l'API (auto-remplissage)
+        $couverturePath = $this->telechargerCouverture($request->couverture_url);
     }
 
     // création livre
@@ -83,19 +94,23 @@ public function store(Request $request)
         'couverture' => $couverturePath,
     ]);
 
-    // exemplaire initial
-    Exemplaire::create([
-        'livre_id' => $livre->id,
-        'code' => $livre->cote . '-01',
-        'statut' => 'Disponible',
-    ]);
+    // exemplaires (selon le nombre saisi, 1 par défaut)
+    $nbExemplaires = (int) ($data['nombre_exemplaires'] ?? 1);
+
+    for ($i = 1; $i <= $nbExemplaires; $i++) {
+        Exemplaire::create([
+            'livre_id' => $livre->id,
+            'code' => $livre->cote . '-' . str_pad($i, 2, '0', STR_PAD_LEFT),
+            'statut' => 'Disponible',
+        ]);
+    }
 
     // auteurs
     $livre->auteurs()->attach($data['auteurs']);
 
     return redirect()
         ->route('bibliothecaire.livres.index')
-        ->with('success', 'Livre ajouté avec succès');
+        ->with('success', "Livre ajouté avec succès ({$nbExemplaires} exemplaire(s) créé(s)).");
 }
 
 public function update(Request $request, Livre $livre)
@@ -311,6 +326,9 @@ public function destroyExemplaire($id)
 
   public function index(Request $request)
 {
+    // 🕒 Relibérer les exemplaires des réservations 24h expirées
+    Demande::expirerReservationsDepassees();
+
     $query = Livre::with('auteurs', 'exemplaires');
 
     // 🔎 Recherche (titre, ISBN, cote ou auteur)
@@ -335,9 +353,23 @@ public function destroyExemplaire($id)
     $livres   = $query->latest()->get();
     $auteurs  = Auteur::all();
 
-    // 👇 pour le verifyStudent live dans la modale d'emprunt
-    $etudiants = User::where('role', 'Étudiant')
-        ->get(['id', 'name', 'matricule']);
+    // 👇 Membres emprunteurs (pour la liste + recherche dans la modale d'emprunt)
+    $membres = User::whereIn('role', ['Étudiant', 'Prof', 'Fonctionnaire', 'Externe'])
+        ->where('status', 'actif')
+        ->withCount([
+            'emprunts as emprunts_actifs' => function ($q) {
+                $q->where('statut', 'En cours');
+            },
+            // réservations en attente de retrait (occupent aussi un livre)
+            'demandes as reservations' => function ($q) {
+                $q->where('statut', 'Acceptée')->whereNotNull('date_limite_retrait');
+            },
+        ])
+        ->orderBy('name')
+        ->get(['id', 'name', 'email', 'matricule', 'role', 'telephone', 'numero_piece']);
+
+    // ⚖️ Quotas (durée + nb max de livres) par type, indexés par rôle
+    $quotas = \App\Models\Quota::all()->keyBy('role');
 
     // 🗂️ Catégories existantes (pour le menu déroulant du filtre)
     $categories = Livre::whereNotNull('categorie')
@@ -356,7 +388,8 @@ public function destroyExemplaire($id)
     return view('bibliothecaire.livres.index', [
         'livres'              => $livres,
         'auteurs'             => $auteurs,
-        'etudiants'           => $etudiants,
+        'membres'             => $membres,
+        'quotas'              => $quotas,
         'categories'          => $categories,
         'typeLabels'          => $this->typeLabels,
         'langueLabels'        => $this->langueLabels,
@@ -366,5 +399,151 @@ public function destroyExemplaire($id)
         'livresIndisponibles' => $livresIndisponibles,
     ]);
 }
+
+    /*
+    |--------------------------------------------------------------------------
+    | AUTO-REMPLISSAGE (Google Books + fallback Open Library)
+    |--------------------------------------------------------------------------
+    */
+    public function lookup(Request $request)
+    {
+        // ISBN nettoyé (chiffres + X), et/ou titre
+        $isbn  = preg_replace('/[^0-9Xx]/', '', (string) $request->query('isbn', ''));
+        $titre = trim((string) $request->query('titre', ''));
+
+        if (! $isbn && ! $titre) {
+            return response()->json(['found' => false], 200);
+        }
+
+        $data = null;
+
+        // 1) Google Books par ISBN (le plus précis)
+        if ($isbn) {
+            $data = $this->fetchGoogleBooks('isbn:' . $isbn);
+        }
+
+        // 2) Google Books par titre (recherche plein texte — l'opérateur intitle: est mal encodé)
+        if (! $data && $titre) {
+            $data = $this->fetchGoogleBooks($titre);
+        }
+
+        // 3) Fallback Open Library par ISBN
+        if (! $data && $isbn) {
+            $data = $this->fetchOpenLibrary($isbn);
+        }
+
+        if (! $data) {
+            return response()->json(['found' => false], 200);
+        }
+
+        // 🔁 Pas de description trouvée ? On la complète via une recherche par titre.
+        if (empty($data['description']) && ! empty($data['titre'])) {
+            $complement = $this->fetchGoogleBooks($data['titre']);
+            if ($complement && ! empty($complement['description'])) {
+                $data['description'] = $complement['description'];
+            }
+        }
+
+        return response()->json(['found' => true] + $data);
+    }
+
+    private function fetchGoogleBooks(string $q): ?array
+    {
+        try {
+            $resp = Http::timeout(8)->get('https://www.googleapis.com/books/v1/volumes', [
+                'q'          => $q,
+                'key'        => config('services.google_books.key'),
+                'maxResults' => 5,
+                'country'    => 'FR',
+            ]);
+
+            if (! $resp->ok()) {
+                return null;
+            }
+
+            $items = $resp->json('items', []);
+            if (empty($items)) {
+                return null;
+            }
+
+            // On privilégie le 1er résultat qui possède une description
+            $info = null;
+            foreach ($items as $item) {
+                $vi = $item['volumeInfo'] ?? [];
+                if (! empty($vi['description'])) {
+                    $info = $vi;
+                    break;
+                }
+            }
+            if (! $info) {
+                $info = $items[0]['volumeInfo'] ?? [];
+            }
+
+            return [
+                'titre'       => $info['title'] ?? null,
+                'auteurs'     => $info['authors'] ?? [],
+                'description' => $info['description'] ?? null,
+                'couverture'  => $info['imageLinks']['thumbnail']
+                              ?? $info['imageLinks']['smallThumbnail']
+                              ?? null,
+                'langue'      => $info['language'] ?? null,
+                'source'      => 'Google Books',
+            ];
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    private function telechargerCouverture(string $url): ?string
+    {
+        try {
+            $resp = Http::timeout(10)->get($url);
+
+            if (! $resp->ok() || empty($resp->body())) {
+                return null;
+            }
+
+            $type = (string) $resp->header('Content-Type');
+            $ext  = str_contains($type, 'png')  ? 'png'
+                  : (str_contains($type, 'webp') ? 'webp' : 'jpg');
+
+            $path = 'couvertures/' . uniqid('cover_') . '.' . $ext;
+            Storage::disk('public')->put($path, $resp->body());
+
+            return $path;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    private function fetchOpenLibrary(string $isbn): ?array
+    {
+        try {
+            $resp = Http::timeout(8)->get('https://openlibrary.org/api/books', [
+                'bibkeys' => 'ISBN:' . $isbn,
+                'format'  => 'json',
+                'jscmd'   => 'data',
+            ]);
+
+            $book = $resp->ok() ? $resp->json('ISBN:' . $isbn) : null;
+
+            if (! $book) {
+                return null;
+            }
+
+            return [
+                'titre'       => $book['title'] ?? null,
+                'auteurs'     => collect($book['authors'] ?? [])->pluck('name')->filter()->values()->all(),
+                'description' => is_array($book['notes'] ?? null)
+                                    ? ($book['notes']['value'] ?? null)
+                                    : ($book['notes'] ?? null),
+                'couverture'  => $book['cover']['medium'] ?? $book['cover']['large'] ?? null,
+                'langue'      => null,
+                'source'      => 'Open Library',
+            ];
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
 
 }

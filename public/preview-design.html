@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aperçu design — Espace Bibliothèque</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+  --bg:#f6f8fc;
+  --card:#ffffff;
+  --ink:#0f172a;
+  --muted:#64748b;
+  --line:#eef2f7;
+  --brand:#4f46e5;
+  --brand-soft:#eef2ff;
+  --green:#16a34a; --green-soft:#dcfce7;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --red:#dc2626;  --red-soft:#fee2e2;
+  --sky:#0ea5e9;  --sky-soft:#e0f2fe;
+  --radius:18px;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* ===== Sidebar ===== */
+.sidebar{
+  position:fixed;top:0;left:0;width:264px;height:100%;
+  background:var(--card);border-right:1px solid var(--line);
+  padding:22px 16px;display:flex;flex-direction:column;gap:6px;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:6px 8px 22px}
+.brand .logo{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 6px 14px rgba(79,70,229,.35);
+}
+.brand b{font-size:1.05rem;font-weight:700;letter-spacing:-.2px}
+.brand small{display:block;color:var(--muted);font-weight:500;font-size:.72rem}
+
+.nav-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;font-weight:600;padding:14px 10px 6px}
+.nav a{
+  display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;
+  color:#475569;text-decoration:none;font-weight:500;font-size:.92rem;transition:.18s;
+}
+.nav a i{width:20px;text-align:center;font-size:1rem;color:#94a3b8;transition:.18s}
+.nav a:hover{background:#f8fafc;color:var(--ink)}
+.nav a.active{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.nav a.active i{color:var(--brand)}
+
+.side-foot{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--line)}
+.avatar{width:38px;height:38px;border-radius:50%;background:#e2e8f0;color:#475569;display:flex;align-items:center;justify-content:center;font-weight:700}
+.side-foot .who{font-size:.85rem;font-weight:600;line-height:1.1}
+.side-foot .who small{color:var(--muted);font-weight:500}
+
+/* ===== Main ===== */
+.main{margin-left:264px;padding:26px 34px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.topbar h1{font-size:1.5rem;font-weight:800;letter-spacing:-.4px}
+.topbar p{color:var(--muted);font-size:.9rem;margin-top:3px}
+.top-actions{display:flex;align-items:center;gap:12px}
+.search{
+  display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+  padding:9px 14px;border-radius:12px;color:var(--muted);width:260px;box-shadow:var(--shadow)
+}
+.search input{border:none;outline:none;font-family:inherit;font-size:.88rem;width:100%;color:var(--ink)}
+.icon-btn{width:42px;height:42px;border-radius:12px;background:var(--card);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:#475569;box-shadow:var(--shadow);position:relative;cursor:pointer}
+.icon-btn .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff}
+
+/* ===== KPI ===== */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:22px}
+.kpi{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.kpi .ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:14px}
+.kpi .val{font-size:1.9rem;font-weight:800;letter-spacing:-.5px}
+.kpi .lab{color:var(--muted);font-size:.85rem;font-weight:500;margin-top:2px}
+.kpi .trend{font-size:.78rem;font-weight:600;margin-top:10px;display:inline-flex;align-items:center;gap:5px}
+.trend.up{color:var(--green)} .trend.down{color:var(--red)}
+.i-brand{background:var(--brand-soft);color:var(--brand)}
+.i-green{background:var(--green-soft);color:var(--green)}
+.i-amber{background:var(--amber-soft);color:var(--amber)}
+.i-red{background:var(--red-soft);color:var(--red)}
+
+/* ===== Panels ===== */
+.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}
+.panel{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.panel-head h3{font-size:1rem;font-weight:700}
+.panel-head a{font-size:.82rem;color:var(--brand);text-decoration:none;font-weight:600}
+
+/* mini bar chart */
+.chart{display:flex;align-items:flex-end;gap:14px;height:200px;padding-top:10px}
+.bar{flex:1;background:linear-gradient(180deg,#6366f1,#a5b4fc);border-radius:8px 8px 4px 4px;position:relative;transition:.2s}
+.bar:hover{filter:brightness(1.05)}
+.bar span{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:.7rem;color:var(--muted);font-weight:500}
+
+/* list */
+.item{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:none}
+.item .th{width:40px;height:54px;border-radius:8px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;color:var(--brand)}
+.item .t{font-weight:600;font-size:.9rem}
+.item .s{color:var(--muted);font-size:.78rem;margin-top:2px}
+.badge{margin-left:auto;font-size:.72rem;font-weight:600;padding:5px 11px;border-radius:20px}
+.b-green{background:var(--green-soft);color:var(--green)}
+.b-amber{background:var(--amber-soft);color:var(--amber)}
+.b-sky{background:var(--sky-soft);color:var(--sky)}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo"><i class="fas fa-book-open"></i></div>
+    <div><b>Bibliothèque</b><small>Espace bibliothécaire</small></div>
+  </div>
+
+  <div class="nav-label">Principal</div>
+  <nav class="nav">
+    <a class="active"><i class="fas fa-grip"></i> Tableau de bord</a>
+    <a><i class="fas fa-book"></i> Gestion des livres</a>
+    <a><i class="fas fa-paper-plane"></i> Demandes <span class="badge b-amber" style="margin-left:auto">3</span></a>
+    <a><i class="fas fa-right-left"></i> Suivi des emprunts</a>
+    <a><i class="fas fa-chart-pie"></i> Statistiques</a>
+  </nav>
+
+  <div class="nav-label">Compte</div>
+  <nav class="nav">
+    <a><i class="fas fa-user"></i> Mon profil</a>
+    <a><i class="fas fa-arrow-right-from-bracket"></i> Déconnexion</a>
+  </nav>
+
+  <div class="side-foot">
+    <div class="avatar">FM</div>
+    <div class="who">Falilatou M.<br><small>Bibliothécaire</small></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="topbar">
+    <div>
+      <h1>Tableau de bord</h1>
+      <p>Bonjour Falilatou, voici l'activité de la bibliothèque aujourd'hui.</p>
+    </div>
+    <div class="top-actions">
+      <div class="search"><i class="fas fa-magnifying-glass"></i><input placeholder="Rechercher un livre, un membre..."></div>
+      <div class="icon-btn"><i class="far fa-bell"></i><span class="dot"></span></div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="ico i-brand"><i class="fas fa-book"></i></div>
+      <div class="val">248</div>
+      <div class="lab">Total livres</div>
+      <div class="trend up"><i class="fas fa-arrow-up"></i> +12 ce mois</div>
+    </div>
+    <div class="kpi">
+      <div class="ico i-green"><i class="fas fa-circle-check"></i></div>
+      <div class="val">196</div>
+      <div class="lab">Exemplaires disponibles</div>
+      <div class="trend up"><i class="fas fa-arrow-up"></i> 79% du fonds</div>
+    </div>
+    <div class="kpi">
+      <div class="ico i-sky" style="background:var(--sky-soft);color:var(--sky)"><i class="fas fa-right-left"></i></div>
+      <div class="val">52</div>
+      <div class="lab">Emprunts en cours</div>
+      <div class="trend up"><i class="fas fa-arrow-up"></i> +8 cette semaine</div>
+    </div>
+    <div class="kpi">
+      <div class="ico i-red"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="val">4</div>
+      <div class="lab">Retards</div>
+      <div class="trend down"><i class="fas fa-arrow-down"></i> -2 vs sem. dern.</div>
+    </div>
+  </div>
+
+  <!-- Panels -->
+  <div class="grid2">
+    <div class="panel">
+      <div class="panel-head"><h3>Emprunts — 8 dernières semaines</h3><a href="#">Voir tout</a></div>
+      <div class="chart">
+        <div class="bar" style="height:45%"><span>S1</span></div>
+        <div class="bar" style="height:62%"><span>S2</span></div>
+        <div class="bar" style="height:50%"><span>S3</span></div>
+        <div class="bar" style="height:78%"><span>S4</span></div>
+        <div class="bar" style="height:66%"><span>S5</span></div>
+        <div class="bar" style="height:85%"><span>S6</span></div>
+        <div class="bar" style="height:92%"><span>S7</span></div>
+        <div class="bar" style="height:100%"><span>S8</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Demandes récentes</h3><a href="#">Tout traiter</a></div>
+      <div class="item">
+        <div class="th"><i class="fas fa-book"></i></div>
+        <div><div class="t">Clean Code</div><div class="s">Demandé par Yacine B. · Étudiant</div></div>
+        <span class="badge b-amber">En attente</span>
+      </div>
+      <div class="item">
+        <div class="th"><i class="fas fa-book"></i></div>
+        <div><div class="t">Sapiens</div><div class="s">Demandé par Pr. Karim · Prof</div></div>
+        <span class="badge b-green">Acceptée</span>
+      </div>
+      <div class="item">
+        <div class="th"><i class="fas fa-book"></i></div>
+        <div><div class="t">Le Petit Prince</div><div class="s">Demandé par Sara L. · Externe</div></div>
+        <span class="badge b-sky">En retrait</span>
+      </div>
+      <div class="item">
+        <div class="th"><i class="fas fa-book"></i></div>
+        <div><div class="t">Linear Algebra</div><div class="s">Demandé par Inès M. · Étudiant</div></div>
+        <span class="badge b-amber">En attente</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

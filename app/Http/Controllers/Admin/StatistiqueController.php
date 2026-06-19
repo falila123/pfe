@@ -28,12 +28,23 @@ class StatistiqueController extends Controller
             ->orderByDesc('total')
             ->get();
 
+        // ⚧ Répartition par sexe
+        $parSexe = User::query()
+            ->selectRaw("COALESCE(NULLIF(sexe, ''), 'Non renseigné') as sexe, COUNT(*) as total")
+            ->groupBy('sexe')
+            ->get();
+
+        $sexeLabels = $parSexe->pluck('sexe');
+        $sexeValues = $parSexe->pluck('total');
+
         return view('admin.statistiques.index', compact(
             'totalUsers',
             'actifs',
             'desactives',
             'etudiants',
-            'parRole'
+            'parRole',
+            'sexeLabels',
+            'sexeValues'
         ));
     }
 }

@@ -86,18 +86,27 @@
 
                     </div>
 
-                    {{-- PASSWORD --}}
+                    {{-- SEXE --}}
                     <div class="mb-3">
 
-                        <label class="form-label">Mot de passe</label>
+                        <label class="form-label">Sexe</label>
 
-                        <input
-                            type="password"
-                            name="password"
-                            class="form-control"
-                            required
-                        >
+                        <select name="sexe" class="form-select" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Homme" {{ old('sexe') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                            <option value="Femme" {{ old('sexe') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                        </select>
 
+                    </div>
+
+                    {{-- INVITATION (plus de mot de passe à saisir) --}}
+                    <div class="alert alert-info d-flex align-items-start gap-2 py-2">
+                        <i class="fas fa-envelope mt-1"></i>
+                        <div class="small">
+                            Aucun mot de passe à saisir : à la création, un
+                            <strong>email d'invitation</strong> est envoyé à l'utilisateur
+                            avec un lien sécurisé pour qu'il définisse lui-même son mot de passe.
+                        </div>
                     </div>
 
                     {{-- ROLE --}}
@@ -114,19 +123,24 @@
 
                             <option value="">Sélectionner...</option>
 
-                            <option value="Étudiant">Étudiant</option>
+                            <optgroup label="Membres">
+                                <option value="Étudiant">Étudiant</option>
+                                <option value="Prof">Prof</option>
+                                <option value="Fonctionnaire">Fonctionnaire</option>
+                                <option value="Externe">Externe</option>
+                            </optgroup>
 
-                            <option value="Bibliothécaire">Bibliothécaire</option>
-
-                            <option value="Administrateur">Administrateur</option>
-
-                            <option value="Administration">Administration</option>
+                            <optgroup label="Personnel">
+                                <option value="Bibliothécaire">Bibliothécaire</option>
+                                <option value="Administrateur">Administrateur</option>
+                                <option value="Administration">Administration</option>
+                            </optgroup>
 
                         </select>
 
                     </div>
 
-                    {{-- MATRICULE --}}
+                    {{-- MATRICULE (Étudiant) --}}
                     <div
                         class="mb-3"
                         id="matriculeField"
@@ -142,6 +156,33 @@
                             placeholder="Ex: 22A145FS"
                             value="{{ old('matricule') }}"
                         >
+
+                    </div>
+
+                    {{-- CHAMPS EXTERNE (téléphone + pièce d'identité) --}}
+                    <div id="externeFields" style="display:none;">
+
+                        <div class="mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input
+                                type="text"
+                                name="telephone"
+                                class="form-control"
+                                placeholder="Ex: 06 12 34 56 78"
+                                value="{{ old('telephone') }}"
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">N° pièce d'identité (CIN / passeport)</label>
+                            <input
+                                type="text"
+                                name="numero_piece"
+                                class="form-control"
+                                placeholder="Déposée en garantie au retrait"
+                                value="{{ old('numero_piece') }}"
+                            >
+                        </div>
 
                     </div>
 
@@ -186,21 +227,26 @@
     const matriculeField =
         document.getElementById("matriculeField");
 
-    function toggleMatricule() {
+    const externeFields =
+        document.getElementById("externeFields");
 
-        if (roleSelect.value === "Étudiant") {
-            matriculeField.style.display = "block";
-        } else {
-            matriculeField.style.display = "none";
-        }
+    function toggleRoleFields() {
+
+        // Matricule : uniquement pour Étudiant
+        matriculeField.style.display =
+            roleSelect.value === "Étudiant" ? "block" : "none";
+
+        // Téléphone + pièce : uniquement pour Externe
+        externeFields.style.display =
+            roleSelect.value === "Externe" ? "block" : "none";
     }
 
-    roleSelect?.addEventListener("change", toggleMatricule);
+    roleSelect?.addEventListener("change", toggleRoleFields);
 
     // 🔥 RESTORE STATE AFTER VALIDATION ERROR
     document.addEventListener("DOMContentLoaded", function () {
 
-        toggleMatricule();
+        toggleRoleFields();
 
         @if ($errors->any())
 

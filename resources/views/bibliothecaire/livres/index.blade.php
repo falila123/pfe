@@ -34,7 +34,8 @@
 
     // ✅ VARIABLE GLOBALE
     window.livresData = @json($livresFormatted);
-    window.etudiantsData = @json($etudiants);
+    window.membresData = @json($membres);
+    window.quotasData  = @json($quotas);
     window.auteursData = @json($auteurs);
     console.log("auteursData chargé:", window.auteursData);
     console.log("livresData chargé:", window.livresData);
@@ -217,45 +218,109 @@ function openAddModal()
     modal.show();
 }
 
+function escapeHtml(s){
+    return (s || '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+}
+
 function openBorrowModal(id, code){
     document.getElementById('borrowExemplaireId').value = id;
-    document.getElementById('borrowExemplaireCode').value = code;
-    document.getElementById('studentCode').value = '';
-    document.getElementById('borrowDuration').value = '';
-    document.getElementById('studentInfo').innerHTML = '';
-    document.getElementById('returnDate').value = '';
-
-    const today = new Date();
-    document.getElementById('borrowDate').value = today.toLocaleDateString('fr-FR');
+    document.getElementById('borrowUserId').value = '';
+    document.getElementById('borrowExemplaireCode').innerText = code;
+    document.getElementById('memberSearch').value = '';
+    document.getElementById('memberResults').innerHTML = '';
+    document.getElementById('selectedMemberPanel').style.display = 'none';
+    document.getElementById('borrowConfirmBtn').disabled = true;
 
     new bootstrap.Modal(document.getElementById('borrowModal')).show();
 }
 
-function computeReturnDate(){
-    const duration = parseInt(document.getElementById('borrowDuration').value);
-    const out = document.getElementById('returnDate');
+function filterMembers(){
+    const q = document.getElementById('memberSearch').value.trim().toLowerCase();
+    const box = document.getElementById('memberResults');
 
-    if(!duration || duration <= 0){ out.value = ''; return; }
+    if(!q){ box.innerHTML = ''; return; }
 
-    const d = new Date();
-    d.setDate(d.getDate() + duration);
-    out.value = d.toLocaleDateString('fr-FR');
+    const matches = (window.membresData || []).filter(m =>
+        (m.name && m.name.toLowerCase().includes(q)) ||
+        (m.email && m.email.toLowerCase().includes(q)) ||
+        (m.matricule && m.matricule.toLowerCase().includes(q))
+    ).slice(0, 8);
+
+    box.innerHTML = matches.length
+        ? matches.map(m => `
+            <button type="button" class="list-group-item list-group-item-action member-result" data-id="${m.id}">
+                <strong>${escapeHtml(m.name)}</strong>
+                <span class="badge bg-secondary">${m.role}</span><br>
+                <small class="text-muted">${m.matricule ? 'Matricule : ' + escapeHtml(m.matricule) : escapeHtml(m.email || '')}</small>
+            </button>`).join('')
+        : `<div class="text-muted small p-2">Aucun membre trouvé.</div>`;
 }
 
-function verifyStudent(){
-    const matricule = document.getElementById('studentCode').value.trim();
-    const info = document.getElementById('studentInfo');
+function selectBorrowMember(m){
+    document.getElementById('borrowUserId').value = m.id;
+    document.getElementById('memberResults').innerHTML = '';
+    document.getElementById('memberSearch').value = m.name;
 
-    if(!matricule){ info.innerHTML = ''; return; }
+    const quota     = (window.quotasData || {})[m.role] || null;
+    const maxLivres = quota ? quota.max_livres : null;
+    const maxJours  = quota ? quota.max_jours  : null;
+    // livres occupés = emprunts en cours + réservations en attente de retrait
+    const actifs    = (m.emprunts_actifs ?? 0) + (m.reservations ?? 0);
 
-    const student = (window.etudiantsData || []).find(
-        u => u.matricule === matricule
-    );
+    document.getElementById('selMemberName').innerText = m.name + ' ';
+    document.getElementById('selMemberType').innerText = m.role;
+    document.getElementById('selMemberId').innerText =
+        m.matricule ? ('Matricule : ' + m.matricule)
+        : (m.numero_piece ? ('Pièce : ' + m.numero_piece) : (m.email || ''));
 
-    info.innerHTML = student
-        ? `<span style="color:#16a34a;font-weight:600;">✓ Étudiant trouvé : ${student.name}</span>`
-        : `<span style="color:#dc2626;font-weight:600;">✗ Aucun étudiant trouvé</span>`;
+    document.getElementById('selectedMemberPanel').style.display = 'block';
+
+    const warn = document.getElementById('quotaWarning');
+    const confirmBtn = document.getElementById('borrowConfirmBtn');
+    const datesRow = document.getElementById('borrowDatesRow');
+
+    // ⛔ Limite atteinte → on n'affiche que l'avertissement (pas de durée/dates)
+    if(maxLivres !== null && actifs >= maxLivres){
+        warn.style.display = 'block';
+        warn.innerHTML = `<i class="fas fa-circle-exclamation me-1"></i> Limite d'emprunts atteinte pour cet utilisateur (${actifs}/${maxLivres}).`;
+        confirmBtn.disabled = true;
+        datesRow.style.display = 'none';
+        return;
+    }
+
+    // ✅ OK → on affiche durée + dates
+    warn.style.display = 'none';
+    confirmBtn.disabled = false;
+    datesRow.style.display = '';
+
+    const today = new Date();
+    document.getElementById('lblDateEmprunt').innerText = today.toLocaleDateString('fr-FR');
+
+    if(maxJours){
+        document.getElementById('lblDuree').innerText = `${maxJours} jours`;
+        const ret = new Date();
+        ret.setDate(ret.getDate() + maxJours);
+        document.getElementById('lblDateRetour').innerText = ret.toLocaleDateString('fr-FR');
+    } else {
+        document.getElementById('lblDuree').innerText = '—';
+        document.getElementById('lblDateRetour').innerText = '—';
+    }
 }
+
+// Sélection d'un membre dans la liste (délégation d'événement)
+document.addEventListener('DOMContentLoaded', function () {
+    const box = document.getElementById('memberResults');
+    if (box) {
+        box.addEventListener('click', function (e) {
+            const btn = e.target.closest('.member-result');
+            if (!btn) return;
+            const m = (window.membresData || []).find(x => String(x.id) === btn.dataset.id);
+            if (m) selectBorrowMember(m);
+        });
+    }
+});
 
 function returnBook(url){
     const form = document.getElementById('returnForm');

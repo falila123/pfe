@@ -10,6 +10,7 @@ class Emprunt extends Model
     protected $fillable = [
         'livre_id',
         'user_id',
+        'demande_id',
         'exemplaire_id',
         'date_emprunt',
         'date_retour_prevue',
@@ -42,6 +43,12 @@ class Emprunt extends Model
     public function exemplaire()
     {
         return $this->belongsTo(Exemplaire::class);
+    }
+
+    // null = emprunt effectué sur place (sans demande en ligne)
+    public function demande()
+    {
+        return $this->belongsTo(Demande::class);
     }
 
     /*

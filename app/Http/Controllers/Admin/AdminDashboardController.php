@@ -12,41 +12,28 @@ class AdminDashboardController extends Controller
 {
     public function index()
 {
-    // KPI
-    $totalLivres = Livre::count();
-    $totalExemplaires = Exemplaire::count();
-    $activeUsers = User::where('status', 'actif')->count();
+    // KPI orientés comptes (domaine de l'administrateur)
+    $internes      = User::whereIn('role', ['Étudiant', 'Prof', 'Fonctionnaire'])->count();
+    $externes      = User::where('role', 'Externe')->count();
+    $activeUsers   = User::where('status', 'actif')->count();
     $inactiveUsers = User::where('status', 'inactif')->count();
 
     // =========================
-    // ALERTES RECENTES
+    // ACTIVITÉ RÉCENTE (comptes)
     // =========================
 
-    $lastBorrow = Emprunt::with(['livre', 'user'])
-        ->where('statut', 'En cours')
-        ->latest()
-        ->first();
-
-    $lastReturn = Emprunt::with(['livre', 'user'])
-        ->where('statut', 'Retourné')
-        ->latest()
-        ->first();
-
-    $lateCount = Emprunt::where('statut', 'En cours')
-        ->whereDate('date_retour_prevue', '<', now())
-        ->count();
-
-    $lastUser = User::latest()->first();
+    $lastUser        = User::latest()->first();
+    $lastStaff       = User::whereIn('role', User::ROLES_PERSONNEL)->latest()->first();
+    $lastDeactivated = User::where('status', 'inactif')->latest('updated_at')->first();
 
     return view('admin.dashboard', compact(
-        'totalLivres',
-        'totalExemplaires',
+        'internes',
+        'externes',
         'activeUsers',
         'inactiveUsers',
-        'lastBorrow',
-        'lastReturn',
-        'lateCount',
-        'lastUser'
+        'lastUser',
+        'lastStaff',
+        'lastDeactivated'
     ));
 }
 }

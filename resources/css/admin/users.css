@@ -220,7 +220,7 @@
 
     flex:1;
 
-    min-width:200px;
+    min-width:150px;
 }
 
 /* SELECTS */
@@ -359,6 +359,13 @@
 
 .inactive-user{
 
+    background:#fafbfc;
+}
+
+/* On dimme uniquement les cellules de contenu, pas la colonne d'actions
+   (sinon le menu déroulant hérite de l'opacité et devient illisible) */
+.inactive-user td:not(:last-child){
+
     opacity:0.5;
 }
 
@@ -403,6 +410,21 @@
     background:#f8d7da;
 
     color:#721c24;
+}
+
+.badge-prof{
+    background:#e0e7ff;
+    color:#3730a3;
+}
+
+.badge-fonctionnaire{
+    background:#cffafe;
+    color:#155e75;
+}
+
+.badge-externe{
+    background:#fae8ff;
+    color:#86198f;
 }
 
 /* =========================================================

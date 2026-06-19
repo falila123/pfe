@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Pagination en Bootstrap 5 (cohérent avec l'UI)
+        Paginator::useBootstrapFive();
+
         Validator::replacer('unique', function ($message, $attribute, $rule, $parameters) {
 
             if ($attribute === 'email') {

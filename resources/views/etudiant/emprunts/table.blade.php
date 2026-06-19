@@ -5,7 +5,6 @@
         <thead>
             <tr>
                 <th>Livre</th>
-                <th>Exemplaire</th>
                 <th>Date emprunt</th>
                 <th>Date retour prévue</th>
                 <th>Statut</th>
@@ -19,8 +18,6 @@
 
                 <tr>
                     <td>{{ $emprunt->livre->titre ?? '—' }}</td>
-
-                    <td>{{ $emprunt->exemplaire->code ?? '—' }}</td>
 
                     <td>{{ $emprunt->date_emprunt?->format('d/m/Y') }}</td>
 
@@ -42,7 +39,7 @@
             @empty
 
                 <tr>
-                    <td colspan="6" class="text-center text-muted">
+                    <td colspan="5" class="text-center text-muted">
                         Vous n'avez aucun emprunt pour le moment.
                     </td>
                 </tr>

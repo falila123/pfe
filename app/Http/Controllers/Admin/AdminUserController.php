@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\AccountInvitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AdminUserController extends Controller
 {
@@ -70,20 +74,25 @@ class AdminUserController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $totalUsers = User::count();
+
+        // Membres = emprunteurs (4 types)
+        $membres = User::whereIn('role', ['Étudiant', 'Prof', 'Fonctionnaire', 'Externe'])->count();
+
+        // Personnel = staff
+        $personnel = User::whereIn('role', ['Administrateur', 'Bibliothécaire', 'Administration'])->count();
+
+        $desactives = User::where('status', 'inactif')->count();
+
         $etudiants = User::where('role', 'Étudiant')->count();
-
-        $bibliothecaires = User::where('role', 'Bibliothécaire')->count();
-
-        $administrateurs = User::where('role', 'Administrateur')->count();
-
-        $administration = User::where('role', 'Administration')->count();
 
         return view('admin.users.index', compact(
             'users',
-            'etudiants',
-            'bibliothecaires',
-            'administrateurs',
-            'administration'
+            'totalUsers',
+            'membres',
+            'personnel',
+            'desactives',
+            'etudiants'
         ));
     }
 
@@ -100,56 +109,57 @@ class AdminUserController extends Controller
             'name' => 'required|string|max:255',
 
             'email' => [
-            'required',
-            'email',
-            'unique:users,email'
-        ],
+                'required',
+                'email',
+                'unique:users,email'
+            ],
 
-            'password' => 'required|min:4',
+            'sexe' => ['required', Rule::in(['Homme', 'Femme'])],
 
-            'role' => 'required',
+            'role' => ['required', Rule::in([
+                'Étudiant', 'Prof', 'Fonctionnaire', 'Externe',
+                'Bibliothécaire', 'Administrateur', 'Administration',
+            ])],
 
-            'matricule' => 'nullable|unique:users,matricule',
+            'matricule'    => 'nullable|unique:users,matricule',
+            'telephone'    => 'nullable|string|max:30',
+            'numero_piece' => 'nullable|string|max:100',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | MATRICULE REQUIRED FOR STUDENT
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            $data['role'] === 'Étudiant'
-            && empty($data['matricule'])
-        ) {
-
+        // Champs obligatoires selon le rôle
+        if ($data['role'] === 'Étudiant' && empty($data['matricule'])) {
             return back()
-                ->withErrors([
-                    'matricule' => 'Le matricule est obligatoire pour un étudiant.'
-                ])
+                ->withErrors(['matricule' => 'Le matricule est obligatoire pour un étudiant.'])
                 ->withInput();
         }
 
-        User::create([
+        if ($data['role'] === 'Externe' && (empty($data['telephone']) || empty($data['numero_piece']))) {
+            return back()
+                ->withErrors(['numero_piece' => 'Le téléphone et le n° de pièce d’identité sont obligatoires pour un externe.'])
+                ->withInput();
+        }
 
-            'name' => $data['name'],
-
-            'email' => $data['email'],
-
-            'password' => Hash::make($data['password']),
-
-            'role' => $data['role'],
-
-            'matricule' => $data['role'] === 'Étudiant'
-                ? $data['matricule']
-                : null,
-
-            'status' => 'actif',
+        $user = User::create([
+            'name'         => $data['name'],
+            'email'        => $data['email'],
+            // 🔐 Mot de passe aléatoire inutilisable : l'utilisateur définit le sien via le lien d'invitation
+            'password'     => Hash::make(Str::random(40)),
+            'sexe'         => $data['sexe'],
+            'role'         => $data['role'],
+            'matricule'    => $data['role'] === 'Étudiant' ? $data['matricule'] : null,
+            'telephone'    => $data['role'] === 'Externe'  ? $data['telephone'] : null,
+            'numero_piece' => $data['role'] === 'Externe'  ? $data['numero_piece'] : null,
+            'status'       => 'actif',
+            'must_change_password' => false,
         ]);
+
+        // 📧 Lien d'invitation (jeton de réinitialisation) → email
+        $token = Password::createToken($user);
+        $user->notify(new AccountInvitation($token));
 
         return back()->with(
             'success',
-            'Utilisateur ajouté avec succès.'
+            "Utilisateur créé ✅ Un email d'invitation a été envoyé à {$user->email} pour qu'il définisse son mot de passe."
         );
     }
 
@@ -161,53 +171,52 @@ class AdminUserController extends Controller
 
     public function update(Request $request, User $user)
     {
-                    $data = $request->validate([
+        $data = $request->validate([
 
-                'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
 
-                'email' => [
-                    'required',
-                    'email',
-                    'unique:users,email,' . $user->id,
-                ],
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email,' . $user->id,
+            ],
 
-                'role' => 'required',
+            'sexe' => ['required', Rule::in(['Homme', 'Femme'])],
 
-                'matricule' => [
-                    'nullable',
-                    'unique:users,matricule,' . $user->id,
-                ],
-            ]);
+            'role' => ['required', Rule::in([
+                'Étudiant', 'Prof', 'Fonctionnaire', 'Externe',
+                'Bibliothécaire', 'Administrateur', 'Administration',
+            ])],
 
-        /*
-        |--------------------------------------------------------------------------
-        | MATRICULE REQUIRED FOR STUDENT
-        |--------------------------------------------------------------------------
-        */
+            'matricule' => [
+                'nullable',
+                'unique:users,matricule,' . $user->id,
+            ],
+            'telephone'    => 'nullable|string|max:30',
+            'numero_piece' => 'nullable|string|max:100',
+        ]);
 
-        if (
-            $data['role'] === 'Étudiant'
-            && empty($data['matricule'])
-        ) {
-
+        // Champs obligatoires selon le rôle
+        if ($data['role'] === 'Étudiant' && empty($data['matricule'])) {
             return back()
-                ->withErrors([
-                    'matricule' => 'Le matricule est obligatoire pour un étudiant.'
-                ])
+                ->withErrors(['matricule' => 'Le matricule est obligatoire pour un étudiant.'])
+                ->withInput();
+        }
+
+        if ($data['role'] === 'Externe' && (empty($data['telephone']) || empty($data['numero_piece']))) {
+            return back()
+                ->withErrors(['numero_piece' => 'Le téléphone et le n° de pièce d’identité sont obligatoires pour un externe.'])
                 ->withInput();
         }
 
         $user->update([
-
-            'name' => $data['name'],
-
-            'email' => $data['email'],
-
-            'role' => $data['role'],
-
-            'matricule' => $data['role'] === 'Étudiant'
-                ? $data['matricule']
-                : null,
+            'name'         => $data['name'],
+            'email'        => $data['email'],
+            'sexe'         => $data['sexe'],
+            'role'         => $data['role'],
+            'matricule'    => $data['role'] === 'Étudiant' ? $data['matricule'] : null,
+            'telephone'    => $data['role'] === 'Externe'  ? $data['telephone'] : null,
+            'numero_piece' => $data['role'] === 'Externe'  ? $data['numero_piece'] : null,
         ]);
 
         return back()->with(
@@ -221,31 +230,6 @@ class AdminUserController extends Controller
     | TOGGLE STATUS
     |--------------------------------------------------------------------------
     */
-
-    /*
-    |--------------------------------------------------------------------------
-    | RESET PASSWORD
-    |--------------------------------------------------------------------------
-    */
-
-    public function resetPassword(Request $request, User $user)
-    {
-        $data = $request->validate([
-            'password' => 'required|min:4',
-        ], [
-            'password.required' => 'Veuillez saisir un nouveau mot de passe.',
-            'password.min'      => 'Le mot de passe doit contenir au moins 4 caractères.',
-        ]);
-
-        $user->update([
-            'password' => Hash::make($data['password']),
-        ]);
-
-        return back()->with(
-            'success',
-            "Mot de passe de {$user->name} réinitialisé avec succès."
-        );
-    }
 
     public function toggleStatus(User $user)
 {

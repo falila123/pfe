@@ -9,114 +9,101 @@
         <i class="fas fa-user-circle fa-lg"></i>
         Bienvenue {{ auth()->user()->name }}
     </h1>
+    <p>Voici un aperçu de l'activité de la bibliothèque</p>
 </div>
 
 <!-- KPI DASHBOARD -->
-<div class="row g-4">
+<div class="kpi-row">
 
-    <!-- TOTAL LIVRES -->
-    <div class="col-md-3">
-        <div class="stat-card primary">
-            <div class="stat-icon">
-                <i class="fas fa-book"></i>
-            </div>
-            <div class="stat-number">{{ $totalBooks ?? 0 }}</div>
-            <div>Total Livres</div>
+    <div class="kpi-card">
+        <div class="kpi-ico primary"><i class="fas fa-book"></i></div>
+        <div>
+            <div class="kpi-val">{{ $totalBooks ?? 0 }}</div>
+            <div class="kpi-lab">Total livres</div>
         </div>
     </div>
 
-    <!-- DISPONIBLES -->
-    <div class="col-md-3">
-        <div class="stat-card success">
-            <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="stat-number">{{ $availableBooks ?? 0 }}</div>
-            <div>Disponibles</div>
+    <div class="kpi-card">
+        <div class="kpi-ico success"><i class="fas fa-check-circle"></i></div>
+        <div>
+            <div class="kpi-val">{{ $availableBooks ?? 0 }}</div>
+            <div class="kpi-lab">Disponibles</div>
         </div>
     </div>
 
-    <!-- EMPRUNTÉS -->
-    <div class="col-md-3">
-        <div class="stat-card info">
-            <div class="stat-icon">
-                <i class="fas fa-book-reader"></i>
-            </div>
-            <div class="stat-number">{{ $borrowedBooks ?? 0 }}</div>
-            <div>Empruntés</div>
+    <div class="kpi-card">
+        <div class="kpi-ico info"><i class="fas fa-book-reader"></i></div>
+        <div>
+            <div class="kpi-val">{{ $borrowedBooks ?? 0 }}</div>
+            <div class="kpi-lab">Empruntés</div>
         </div>
     </div>
 
-    <!-- RETARDS -->
-    <div class="col-md-3">
-        <div class="stat-card danger">
-            <div class="stat-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="stat-number">{{ $lateBooks ?? 0 }}</div>
-            <div>Retards</div>
+    <div class="kpi-card">
+        <div class="kpi-ico danger"><i class="fas fa-exclamation-triangle"></i></div>
+        <div>
+            <div class="kpi-val">{{ $lateBooks ?? 0 }}</div>
+            <div class="kpi-lab">Retards</div>
         </div>
     </div>
 
 </div>
 
 <!-- ACTIVITÉ RÉCENTE -->
-<div class="alerts-panel mt-4">
+<div class="table-section mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="mb-0">
-            <i class="fas fa-bell"></i> Activité récente
-        </h6>
-    </div>
+    <h5 class="mb-3"><i class="fas fa-bell"></i> Activité récente</h5>
 
-    <div class="card p-3">
+    <div class="activity">
 
         {{-- DERNIER EMPRUNT --}}
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <i class="fas fa-book text-primary"></i>
-            @if($dernierEmprunt)
-                <span>
-                    Dernier emprunt :
-                    <strong>{{ $dernierEmprunt->livre->titre ?? '—' }}</strong>
-                    par {{ $dernierEmprunt->user->name ?? '—' }}
-                    <small class="text-muted">
-                        ({{ $dernierEmprunt->date_emprunt?->format('d/m/Y') }})
-                    </small>
-                </span>
-            @else
-                <span class="text-muted">Aucun emprunt en cours.</span>
-            @endif
+        <div class="activity-item">
+            <div class="act-ico primary"><i class="fas fa-book"></i></div>
+            <div>
+                @if($dernierEmprunt)
+                    <div class="act-title">
+                        Dernier emprunt : <strong>{{ $dernierEmprunt->livre->titre ?? '—' }}</strong>
+                    </div>
+                    <div class="act-sub">
+                        par {{ $dernierEmprunt->user->name ?? '—' }}
+                        · {{ $dernierEmprunt->date_emprunt?->format('d/m/Y') }}
+                    </div>
+                @else
+                    <div class="act-sub">Aucun emprunt en cours.</div>
+                @endif
+            </div>
         </div>
 
         {{-- DERNIER RETOUR --}}
-        <div class="d-flex align-items-center gap-2 mb-3">
-            <i class="fas fa-undo text-success"></i>
-            @if($dernierRetour)
-                <span>
-                    Dernier retour :
-                    <strong>{{ $dernierRetour->livre->titre ?? '—' }}</strong>
-                    par {{ $dernierRetour->user->name ?? '—' }}
-                    <small class="text-muted">
-                        ({{ $dernierRetour->date_retour_effective?->format('d/m/Y') }})
-                    </small>
-                </span>
-            @else
-                <span class="text-muted">Aucun retour enregistré.</span>
-            @endif
+        <div class="activity-item">
+            <div class="act-ico success"><i class="fas fa-rotate-left"></i></div>
+            <div>
+                @if($dernierRetour)
+                    <div class="act-title">
+                        Dernier retour : <strong>{{ $dernierRetour->livre->titre ?? '—' }}</strong>
+                    </div>
+                    <div class="act-sub">
+                        par {{ $dernierRetour->user->name ?? '—' }}
+                        · {{ $dernierRetour->date_retour_effective?->format('d/m/Y') }}
+                    </div>
+                @else
+                    <div class="act-sub">Aucun retour enregistré.</div>
+                @endif
+            </div>
         </div>
 
         {{-- DEMANDES EN ATTENTE --}}
-        <div class="d-flex align-items-center gap-2">
-            <i class="fas fa-hourglass-half text-warning"></i>
-            @if($demandesEnAttente > 0)
-                <span>
-                    <strong>{{ $demandesEnAttente }}</strong>
-                    demande(s) en attente de validation —
-                    <a href="{{ route('bibliothecaire.demandes.index') }}">Traiter les demandes</a>
-                </span>
-            @else
-                <span class="text-muted">Aucune demande en attente.</span>
-            @endif
+        <div class="activity-item">
+            <div class="act-ico amber"><i class="fas fa-hourglass-half"></i></div>
+            <div>
+                @if($demandesEnAttente > 0)
+                    <div class="act-title">
+                        <strong>{{ $demandesEnAttente }}</strong> demande(s) en attente de validation
+                    </div>
+                @else
+                    <div class="act-sub">Aucune demande en attente.</div>
+                @endif
+            </div>
         </div>
 
     </div>

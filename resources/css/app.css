@@ -6,6 +6,9 @@
 @import "./bibliothecaire/statistiques.css";
 @import "./etudiant/catalogue.css";
 
+/* thème partagé chargé en dernier pour surcharger proprement */
+@import "./theme.css";
+
 
 @tailwind base;
 @tailwind components;

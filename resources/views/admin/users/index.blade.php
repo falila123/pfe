@@ -44,7 +44,7 @@
     </h1>
 
     <p>
-        Gérez les utilisateurs de la bibliothèque
+        Pilotez les comptes des adhérents
     </p>
 
 </div>

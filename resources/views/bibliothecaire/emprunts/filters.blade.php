@@ -1,14 +1,15 @@
 <form method="GET"
       action="{{ route('bibliothecaire.emprunts.suivi') }}"
-      class="search-add-card d-flex align-items-center gap-2 mb-4 p-3">
+      class="d-flex align-items-center gap-2 mb-4">
 
     <input type="text"
            name="search"
            value="{{ request('search') }}"
            class="form-control"
-           placeholder="🔎 Rechercher un étudiant ou un livre...">
+           style="flex: 0 1 240px;"
+           placeholder="🔎 Livre ou membre…">
 
-    <select name="statut" class="form-select">
+    <select name="statut" class="form-select" style="flex: 0 0 240px;">
         <option value="">Tous les statuts</option>
         <option value="En cours"  @selected(request('statut') === 'En cours')>En cours</option>
         <option value="En retard" @selected(request('statut') === 'En retard')>En retard</option>

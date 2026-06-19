@@ -17,7 +17,9 @@
 
                     <th>Email</th>
 
-                    <th>Matricule</th>
+                    <th>Sexe</th>
+
+                    <th>Identifiant</th>
 
                     <th>Rôle</th>
 
@@ -38,6 +40,12 @@
     $badgeClass = match(trim($user->role)) {
 
         'Étudiant' => 'badge-etudiant',
+
+        'Prof' => 'badge-prof',
+
+        'Fonctionnaire' => 'badge-fonctionnaire',
+
+        'Externe' => 'badge-externe',
 
         'Bibliothécaire' => 'badge-bibliothecaire',
 
@@ -70,10 +78,30 @@
 
                         </td>
 
-                        {{-- MATRICULE --}}
+                        {{-- SEXE --}}
                         <td>
 
-                            {{ $user->matricule ?? '-' }}
+                            {{ $user->sexe ?? '—' }}
+
+                        </td>
+
+                        {{-- IDENTIFIANT --}}
+                        <td>
+
+                            @if($user->matricule)
+                                {{ $user->matricule }}
+                            @elseif($user->telephone || $user->numero_piece)
+                                <div style="font-size:.85rem; display:flex; flex-direction:column; gap:6px; white-space:nowrap;">
+                                    @if($user->telephone)
+                                        <span><i class="fas fa-phone fa-xs text-muted me-1"></i>{{ $user->telephone }}</span>
+                                    @endif
+                                    @if($user->numero_piece)
+                                        <span><i class="fas fa-id-card fa-xs text-muted me-1"></i>{{ $user->numero_piece }}</span>
+                                    @endif
+                                </div>
+                            @else
+                                —
+                            @endif
 
                         </td>
 
@@ -122,7 +150,10 @@
                                         data-name="{{ $user->name }}"
                                         data-email="{{ $user->email }}"
                                         data-role="{{ $user->role }}"
+                                        data-sexe="{{ $user->sexe }}"
                                         data-matricule="{{ $user->matricule }}"
+                                        data-telephone="{{ $user->telephone }}"
+                                        data-numero_piece="{{ $user->numero_piece }}"
 
                                         data-bs-toggle="modal"
                                         data-bs-target="#editUserModal"
@@ -161,24 +192,6 @@
 
                                 </button>
 
-                                    {{-- RESET PASSWORD --}}
-                                    <button
-                                        type="button"
-                                        class="edit open-reset-modal"
-
-                                        data-id="{{ $user->id }}"
-                                        data-name="{{ $user->name }}"
-
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#resetPasswordModal"
-                                    >
-
-                                        <i class="fas fa-key"></i>
-
-                                        Réinitialiser MDP
-
-                                    </button>
-
                                 </div>
 
                             </div>
@@ -191,7 +204,7 @@
 
                     <tr>
 
-                        <td colspan="6" class="text-center text-muted py-4">
+                        <td colspan="7" class="text-center text-muted py-4">
 
                             Aucun utilisateur trouvé.
 
@@ -289,67 +302,6 @@
 </div>
 
 {{-- =========================
-     RESET PASSWORD MODAL
-========================= --}}
-<div class="modal fade" id="resetPasswordModal" tabindex="-1">
-
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <form method="POST" id="resetPasswordForm">
-
-                @csrf
-                @method('PATCH')
-
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-key"></i> Réinitialiser le mot de passe
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <p>
-                        Définir un nouveau mot de passe pour
-                        <strong id="resetUserName"></strong>.
-                    </p>
-
-                    <div class="mb-2">
-                        <label class="form-label">Nouveau mot de passe</label>
-                        <input
-                            type="text"
-                            name="password"
-                            class="form-control"
-                            minlength="4"
-                            required
-                        >
-                        <small class="text-muted">
-                            Communiquez-le à l'utilisateur ; il pourra le modifier ensuite depuis son profil.
-                        </small>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Annuler
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        Réinitialiser
-                    </button>
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
-{{-- =========================
      DROPDOWN SCRIPT
 ========================= --}}
 <script>
@@ -376,7 +328,10 @@
 
     document.addEventListener("click", function(e){
 
-        if(!e.target.closest(".action-menu")){
+        // On ferme les menus dès qu'on clique ailleurs que sur les 3 points
+        // (donc aussi quand on choisit "Modifier"/"Désactiver" → le menu disparaît,
+        //  laissant place à la modale)
+        if(!e.target.closest(".menu-dots")){
 
             document
                 .querySelectorAll(".dropdown-menu-user")
@@ -410,8 +365,17 @@
                     document.getElementById('edit_role').value =
                         this.dataset.role;
 
+                    document.getElementById('edit_sexe').value =
+                        this.dataset.sexe ?? '';
+
                     document.getElementById('edit_matricule').value =
                         this.dataset.matricule ?? '';
+
+                    document.getElementById('edit_telephone').value =
+                        this.dataset.telephone ?? '';
+
+                    document.getElementById('edit_numero_piece').value =
+                        this.dataset.numero_piece ?? '';
 
                     document.getElementById('editUserForm').action =
                         '/admin/users/' + this.dataset.id;
@@ -434,19 +398,13 @@
         const role =
             document.getElementById('edit_role').value;
 
-        const container =
-            document.getElementById(
-                'editMatriculeContainer'
-            );
+        // Matricule : uniquement Étudiant
+        document.getElementById('editMatriculeContainer').style.display =
+            role === 'Étudiant' ? 'block' : 'none';
 
-        if(role === 'Étudiant')
-        {
-            container.style.display = 'block';
-        }
-        else
-        {
-            container.style.display = 'none';
-        }
+        // Téléphone + pièce : uniquement Externe
+        document.getElementById('editExterneContainer').style.display =
+            role === 'Externe' ? 'block' : 'none';
     }
 
     document
@@ -514,27 +472,6 @@ document
                     'Activer';
             }
 
-        });
-
-    });
-
-/*
-|--------------------------------------------------------------------------
-| RESET PASSWORD MODAL
-|--------------------------------------------------------------------------
-*/
-
-document
-    .querySelectorAll('.open-reset-modal')
-    .forEach(button => {
-
-        button.addEventListener('click', function () {
-
-            document.getElementById('resetPasswordForm').action =
-                '/admin/users/' + this.dataset.id + '/reset-password';
-
-            document.getElementById('resetUserName').innerText =
-                this.dataset.name;
         });
 
     });

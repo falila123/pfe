@@ -6,7 +6,7 @@
 
 <div class="page-header">
     <h1><i class="fas fa-tasks"></i> Demandes d'emprunts</h1>
-    <p>Validez ou refusez les demandes d'emprunt des étudiants</p>
+    <p>Validez ou refusez les demandes d'emprunt</p>
 </div>
 
 {{-- ALERTES --}}

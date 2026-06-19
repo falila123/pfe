@@ -5,42 +5,42 @@
 @section('content')
 
 <div class="page-header">
-    <h1><i class="fas fa-home"></i> Bienvenue {{ auth()->user()->name }} 👋</h1>
-    <p>Voici un aperçu rapide de votre activité</p>
+    <h1><i class="fas fa-house"></i> Bienvenue {{ auth()->user()->name }}</h1>
+    <p>Votre bibliothèque, à portée de main.</p>
 </div>
 
 {{-- ================= KPI ================= --}}
-<div class="row g-4 mb-4">
+<div class="kpi-row">
 
-    <div class="col-md-3">
-        <div class="stat-card info">
-            <i class="fas fa-hourglass-half"></i>
-            <div class="stat-number">{{ $demandesEnAttente }}</div>
-            <div>Demandes en attente</div>
+    <div class="kpi-card">
+        <div class="kpi-ico info"><i class="fas fa-hourglass-half"></i></div>
+        <div>
+            <div class="kpi-val">{{ $demandesEnAttente }}</div>
+            <div class="kpi-lab">Demandes en attente</div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="stat-card primary">
-            <i class="fas fa-book-reader"></i>
-            <div class="stat-number">{{ $empruntsEnCours }}</div>
-            <div>Emprunts en cours</div>
+    <div class="kpi-card">
+        <div class="kpi-ico primary"><i class="fas fa-book-reader"></i></div>
+        <div>
+            <div class="kpi-val">{{ $empruntsEnCours }}</div>
+            <div class="kpi-lab">Emprunts en cours</div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="stat-card danger">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div class="stat-number">{{ $empruntsRetard }}</div>
-            <div>En retard</div>
+    <div class="kpi-card">
+        <div class="kpi-ico danger"><i class="fas fa-exclamation-triangle"></i></div>
+        <div>
+            <div class="kpi-val">{{ $empruntsRetard }}</div>
+            <div class="kpi-lab">En retard</div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="stat-card success">
-            <i class="fas fa-check"></i>
-            <div class="stat-number">{{ $retournes }}</div>
-            <div>Retournés</div>
+    <div class="kpi-card">
+        <div class="kpi-ico success"><i class="fas fa-check"></i></div>
+        <div>
+            <div class="kpi-val">{{ $retournes }}</div>
+            <div class="kpi-lab">Retournés</div>
         </div>
     </div>
 

@@ -26,6 +26,21 @@
                 Étudiant
             </option>
 
+            <option value="Prof"
+                {{ request('role') === 'Prof' ? 'selected' : '' }}>
+                Prof
+            </option>
+
+            <option value="Fonctionnaire"
+                {{ request('role') === 'Fonctionnaire' ? 'selected' : '' }}>
+                Fonctionnaire
+            </option>
+
+            <option value="Externe"
+                {{ request('role') === 'Externe' ? 'selected' : '' }}>
+                Externe
+            </option>
+
             <option value="Bibliothécaire"
                 {{ request('role') === 'Bibliothécaire' ? 'selected' : '' }}>
                 Bibliothécaire

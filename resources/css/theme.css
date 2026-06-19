@@ -1,0 +1,277 @@
+/* =====================================================================
+   THÈME PARTAGÉ — design tokens (inspiré de la maquette moderne)
+   Chargé en dernier dans app.css. Les composants restylés sont scopés
+   sous .theme-modern pour un déploiement progressif (espace par espace).
+   ===================================================================== */
+
+:root {
+  --bg:        #f6f8fc;
+  --card:      #ffffff;
+  --ink:       #0f172a;
+  --muted:     #64748b;
+  --line:      #eef2f7;
+
+  --brand:      #4f46e5;
+  --brand-soft: #eef2ff;
+
+  --green: #16a34a; --green-soft: #dcfce7;
+  --amber: #d97706; --amber-soft: #fef3c7;
+  --red:   #dc2626; --red-soft:   #fee2e2;
+  --sky:   #0ea5e9; --sky-soft:   #e0f2fe;
+
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.06);
+}
+
+/* =====================================================================
+   COMPOSANTS MODERNISÉS (scopés .theme-modern)
+   ===================================================================== */
+
+/* ---- En-tête de page (style topbar aéré) ---- */
+.theme-modern .page-header {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 22px;
+}
+.theme-modern .page-header h1 {
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -.4px; color: var(--ink);
+}
+.theme-modern .page-header h1 i { color: var(--brand); }
+.theme-modern .page-header p {
+  color: var(--muted); font-size: .9rem; margin-top: 3px;
+}
+
+/* ---- Cartes KPI ---- */
+.theme-modern .stat-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: left;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: default;
+}
+.theme-modern .stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(16,24,40,.10);
+}
+.theme-modern .stat-card > i {
+  width: 46px; height: 46px; border-radius: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; margin-bottom: 12px;
+}
+.theme-modern .stat-card .stat-number {
+  font-size: 1.9rem; font-weight: 800; letter-spacing: -.5px;
+  color: var(--ink); margin: 0;
+}
+.theme-modern .stat-card > div:last-child {
+  color: var(--muted); font-size: .85rem; font-weight: 500;
+}
+
+/* pastilles colorées par variante */
+.theme-modern .stat-card.primary > i { background: var(--brand-soft); color: var(--brand); }
+.theme-modern .stat-card.info    > i { background: var(--sky-soft);   color: var(--sky); }
+.theme-modern .stat-card.success > i { background: var(--green-soft); color: var(--green); }
+.theme-modern .stat-card.danger  > i { background: var(--red-soft);   color: var(--red); }
+.theme-modern .stat-card.warning > i { background: var(--amber-soft); color: var(--amber); }
+
+/* ---- Cartes KPI (verticales, colorées par variante) ---- */
+.theme-modern .kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.theme-modern .kpi-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 9px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 15px 17px;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.theme-modern .kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(16,24,40,.12);
+}
+.theme-modern .kpi-ico {
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.theme-modern .kpi-val {
+  font-size: 1.55rem; font-weight: 800; letter-spacing: -.5px; color: var(--ink); line-height: 1;
+}
+.theme-modern .kpi-lab {
+  color: #475569; font-size: .82rem; font-weight: 500; margin-top: 4px;
+}
+
+/* icône — fond doux par défaut */
+.theme-modern .kpi-ico.primary { background: var(--brand-soft); color: var(--brand); }
+.theme-modern .kpi-ico.info    { background: var(--sky-soft);   color: var(--sky); }
+.theme-modern .kpi-ico.success { background: var(--green-soft); color: var(--green); }
+.theme-modern .kpi-ico.danger  { background: var(--red-soft);   color: var(--red); }
+.theme-modern .kpi-ico.warning { background: var(--amber-soft); color: var(--amber); }
+
+/* carte colorée par variante : fond teinté + icône pleine + chiffre coloré */
+.theme-modern .kpi-card:has(.kpi-ico.primary) { background: var(--brand-soft); border-color: #c7d2fe; }
+.theme-modern .kpi-card:has(.kpi-ico.primary) .kpi-ico { background: var(--brand); color: #fff; }
+.theme-modern .kpi-card:has(.kpi-ico.primary) .kpi-val { color: #4338ca; }
+
+.theme-modern .kpi-card:has(.kpi-ico.info) { background: var(--sky-soft); border-color: #bae6fd; }
+.theme-modern .kpi-card:has(.kpi-ico.info) .kpi-ico { background: var(--sky); color: #fff; }
+.theme-modern .kpi-card:has(.kpi-ico.info) .kpi-val { color: #0369a1; }
+
+.theme-modern .kpi-card:has(.kpi-ico.success) { background: var(--green-soft); border-color: #bbf7d0; }
+.theme-modern .kpi-card:has(.kpi-ico.success) .kpi-ico { background: var(--green); color: #fff; }
+.theme-modern .kpi-card:has(.kpi-ico.success) .kpi-val { color: #15803d; }
+
+.theme-modern .kpi-card:has(.kpi-ico.danger) { background: var(--red-soft); border-color: #fecaca; }
+.theme-modern .kpi-card:has(.kpi-ico.danger) .kpi-ico { background: var(--red); color: #fff; }
+.theme-modern .kpi-card:has(.kpi-ico.danger) .kpi-val { color: #b91c1c; }
+
+.theme-modern .kpi-card:has(.kpi-ico.warning) { background: var(--amber-soft); border-color: #fde68a; }
+.theme-modern .kpi-card:has(.kpi-ico.warning) .kpi-ico { background: var(--amber); color: #fff; }
+.theme-modern .kpi-card:has(.kpi-ico.warning) .kpi-val { color: #b45309; }
+
+/* ---- Panneaux / sections de tableau ---- */
+.theme-modern .table-section {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+.theme-modern .table-section h5 { font-weight: 700; color: var(--ink); }
+
+/* ---- Tableaux ---- */
+.theme-modern .table { margin: 0; }
+.theme-modern .table thead th {
+  background: #f8fafc; color: var(--muted);
+  font-weight: 600; font-size: .76rem; text-transform: uppercase; letter-spacing: .03em;
+  border-bottom: 1px solid var(--line); padding: 12px 14px;
+}
+.theme-modern .table tbody td {
+  padding: 13px 14px; vertical-align: middle;
+  border-color: var(--line); color: var(--ink); font-size: .9rem;
+}
+.theme-modern .table tbody tr:hover > * { background: #f8fafc; }
+
+/* ---- Barres de filtre / recherche ---- */
+.theme-modern .search-add-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+/* ---- Boutons (accent indigo, via variables Bootstrap) ---- */
+.theme-modern .btn-primary {
+  --bs-btn-bg: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: #4338ca;
+  --bs-btn-hover-border-color: #4338ca;
+  --bs-btn-active-bg: #4338ca;
+  --bs-btn-active-border-color: #4338ca;
+  --bs-btn-disabled-bg: var(--brand);
+  --bs-btn-disabled-border-color: var(--brand);
+}
+
+/* ---- Pagination (accent indigo) ---- */
+.theme-modern .pagination {
+  --bs-pagination-color: var(--muted);
+  --bs-pagination-active-bg: var(--brand);
+  --bs-pagination-active-border-color: var(--brand);
+  --bs-pagination-hover-color: var(--brand);
+}
+
+/* ---- Sidebar : icônes indigo + survol indigo (cohérent sur tous les espaces) ---- */
+.theme-modern .sidebar a i { color: var(--brand); }
+.theme-modern .sidebar a:hover { background: var(--brand-soft); color: var(--brand); }
+.theme-modern .sidebar a:hover i { color: var(--brand); }
+
+/* Bouton Déconnexion : indigo par défaut + ombre indigo au survol */
+.theme-modern .logout-btn { background: var(--brand-soft); color: var(--brand); border-color: #c7d2fe; }
+.theme-modern .logout-btn i { color: var(--brand); }
+.theme-modern .logout-btn:hover {
+  background: var(--brand-soft); color: var(--brand); border-color: var(--brand);
+  box-shadow: 0 6px 16px rgba(79,70,229,.22);
+}
+.theme-modern .logout-btn:hover i { color: var(--brand); }
+
+/* Icônes des titres de section en indigo */
+.theme-modern .table-section h5 i,
+.theme-modern .chart-section h5 i { color: var(--brand); }
+
+/* ---- Liste d'activité (dashboard) : petites cartes teintées ---- */
+.theme-modern .activity { display: flex; flex-direction: column; gap: 10px; }
+.theme-modern .activity-item {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 15px; border-radius: 12px;
+}
+.theme-modern .act-ico {
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.theme-modern .act-title { font-size: .9rem; color: var(--ink); }
+.theme-modern .act-sub   { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+
+/* fond teinté + icône pleine, par variante */
+.theme-modern .activity-item:has(.act-ico.primary) { background: var(--brand-soft); }
+.theme-modern .activity-item:has(.act-ico.success) { background: var(--green-soft); }
+.theme-modern .activity-item:has(.act-ico.amber)   { background: var(--amber-soft); }
+.theme-modern .activity-item:has(.act-ico.danger)  { background: var(--red-soft); }
+
+.theme-modern .act-ico.primary { background: var(--brand); color: #fff; }
+.theme-modern .act-ico.success { background: var(--green); color: #fff; }
+.theme-modern .act-ico.amber   { background: var(--amber); color: #fff; }
+.theme-modern .act-ico.danger  { background: var(--red);   color: #fff; }
+
+/* ---- Badges de statut : pastilles douces ---- */
+.theme-modern .badge {
+  font-weight: 600; font-size: .72rem; letter-spacing: .01em;
+  padding: 5px 11px; border-radius: 20px; line-height: 1.3;
+}
+.theme-modern .badge.bg-success   { background: var(--green-soft) !important; color: var(--green) !important; }
+.theme-modern .badge.bg-warning   { background: var(--amber-soft) !important; color: var(--amber) !important; }
+.theme-modern .badge.bg-danger    { background: var(--red-soft)   !important; color: var(--red)   !important; }
+.theme-modern .badge.bg-info      { background: var(--sky-soft)   !important; color: var(--sky)   !important; }
+.theme-modern .badge.bg-primary   { background: var(--brand-soft) !important; color: var(--brand) !important; }
+.theme-modern .badge.bg-secondary { background: #f1f5f9 !important; color: #475569 !important; }
+
+/* ---- Alertes : coins doux + style soft ---- */
+.theme-modern .alert { border-radius: var(--radius-sm); border: 1px solid transparent; font-size: .9rem; }
+.theme-modern .alert-success { background: var(--green-soft); color: #166534; border-color: #bbf7d0; }
+.theme-modern .alert-danger  { background: var(--red-soft);   color: #991b1b; border-color: #fecaca; }
+.theme-modern .alert-info    { background: var(--sky-soft);   color: #075985; border-color: #bae6fd; }
+
+/* ---- Boutons secondaires / outline plus doux ---- */
+.theme-modern .btn { border-radius: 10px; font-weight: 600; }
+.theme-modern .btn-sm { border-radius: 8px; }
+
+/* ---- Formulaires : champs cohérents avec le thème ---- */
+.theme-modern .form-control,
+.theme-modern .form-select {
+  border-radius: 10px; border-color: #e2e8f0; font-size: .92rem;
+}
+.theme-modern .form-control:focus,
+.theme-modern .form-select:focus {
+  border-color: var(--brand); box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+}
+
+/* ---- Modales : coins doux + en-tête épuré ---- */
+.theme-modern .modal-content { border: none; border-radius: var(--radius); box-shadow: 0 24px 60px rgba(16,24,40,.22); }
+.theme-modern .modal-header, .theme-modern .modal-footer { border-color: var(--line); }
+.theme-modern .modal-title { font-weight: 700; }
+/* formulaires de modale plus compacts */
+.theme-modern .modal .form-label { margin-bottom: .3rem; font-weight: 600; font-size: .85rem; }
+.theme-modern .modal .modal-body { padding-top: 16px; padding-bottom: 16px; }
+
+/* ---- Liens/pagination déjà gérés plus haut ---- */
+

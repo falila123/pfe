@@ -5,8 +5,8 @@
         <thead>
             <tr>
                 <th>Livre</th>
-                <th>Exemplaire</th>
-                <th>Étudiant</th>
+                <th>Membre</th>
+                <th>Date demande</th>
                 <th>Date emprunt</th>
                 <th>Date retour</th>
                 <th>Statut</th>
@@ -21,13 +21,20 @@
                 <tr>
                     <td>{{ $emprunt->livre->titre ?? '—' }}</td>
 
-                    <td>{{ $emprunt->exemplaire->code ?? '—' }}</td>
-
                     <td>
                         <span class="student-info">
                             {{ $emprunt->user->name ?? 'Inconnu' }}
-                            <small>({{ $emprunt->user->matricule ?? '—' }})</small>
+                            <small>{{ $emprunt->user->matricule ?? $emprunt->user->email }}</small>
+                            <span class="badge bg-secondary">{{ $emprunt->user->role }}</span>
                         </span>
+                    </td>
+
+                    <td>
+                        @if($emprunt->demande)
+                            {{ $emprunt->demande->created_at->format('d/m/Y') }}
+                        @else
+                            <span class="text-muted fst-italic">Effectué sur place</span>
+                        @endif
                     </td>
 
                     <td>{{ $emprunt->date_emprunt?->format('d/m/Y') }}</td>
@@ -41,7 +48,7 @@
                     </td>
 
                     <td>
-                        <span class="badge {{ $emprunt->indication_classe }}">
+                        <span class="badge indication-badge {{ $emprunt->indication_classe }}">
                             {{ $emprunt->indication }}
                         </span>
                     </td>

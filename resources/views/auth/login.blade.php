@@ -3,145 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connexion - Bibliothèque universitaire</title>
+<title>Connexion — Bibliothèque universitaire</title>
 
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+:root{
+  --brand:#4f46e5; --brand-soft:#eef2ff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+}
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f6f8fc 60%);
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  padding: 20px;
 }
 
-.login-wrapper {
-    display: flex;
-    width: 100%;
-    max-width: 860px;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    overflow: hidden;
+.auth-card {
+  display: flex;
+  width: 100%; max-width: 940px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 30px 70px rgba(16,24,40,.18);
+  overflow: hidden;
 }
 
-/* ===== Panneau gauche ===== */
-.login-intro {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-    color: #fff;
-    padding: 40px 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    flex: 0.95;
+/* ===== Panneau illustration ===== */
+.auth-illus {
+  flex: 1.05;
+  background: linear-gradient(160deg, #eef2ff 0%, #e0e7ff 100%);
+  padding: 44px 36px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
 }
-.login-intro .intro-icon { font-size: 3.2rem; margin-bottom: 14px; opacity: 0.9; }
-.login-intro h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
-.login-intro p { font-size: 0.9rem; opacity: 0.9; margin-bottom: 22px; }
+.auth-illus img { width: 100%; max-width: 320px; margin-bottom: 26px; }
+.auth-illus h2 { font-size: 1.4rem; font-weight: 800; color: var(--ink); letter-spacing: -.4px; margin-bottom: 8px; }
+.auth-illus p { color: var(--muted); font-size: .92rem; max-width: 320px; line-height: 1.5; }
 
-.login-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.82rem; }
-.login-feature { display: flex; align-items: center; gap: 8px; opacity: 0.92; }
-.login-feature i { font-size: 1rem; min-width: 18px; }
+/* ===== Panneau formulaire ===== */
+.auth-form { flex: 1; padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; }
 
-/* ===== Panneau droit ===== */
-.login-form-container {
-    padding: 40px 35px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
+.brand { display:flex; align-items:center; gap:12px; margin-bottom: 26px; }
+.brand .logo {
+  width:44px; height:44px; border-radius:12px;
+  background:linear-gradient(135deg,#6366f1,#4f46e5);
+  color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px;
+  box-shadow:0 6px 14px rgba(79,70,229,.35);
 }
-.login-form-title { font-size: 1.6rem; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
-.login-form-subtitle { color: #64748b; margin-bottom: 22px; font-size: 0.9rem; }
+.brand b { font-size:1.05rem; font-weight:700; color:var(--ink); display:block; line-height:1.1; }
+.brand small { color:var(--muted); font-weight:500; font-size:.74rem; }
+
+.auth-form h1 { font-size: 1.6rem; font-weight: 800; color: var(--ink); letter-spacing: -.4px; }
+.auth-form .sub { color: var(--muted); margin-bottom: 22px; font-size: .9rem; }
 
 .form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-weight: 600; color: #334155; margin-bottom: 6px; font-size: 0.88rem; }
-.form-group .input-wrap { position: relative; }
-.form-group .input-wrap i {
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    color: #94a3b8; font-size: 0.9rem;
+.form-group label { display:block; font-weight:600; color:#334155; margin-bottom:6px; font-size:.86rem; }
+.input-wrap { position: relative; }
+.input-wrap i { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:.9rem; }
+.input-wrap input {
+  width:100%; padding:11px 13px 11px 38px; border:2px solid var(--line); border-radius:10px;
+  font-size:.92rem; font-family:inherit; transition:.2s;
 }
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    width: 100%; padding: 10px 12px 10px 36px;
-    border: 2px solid #e2e8f0; border-radius: 8px;
-    font-size: 0.92rem; transition: all 0.25s ease;
-}
-.form-group input:focus {
-    outline: none; border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-}
+.input-wrap input:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(79,70,229,.12); }
 
-.remember-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 0.86rem; color: #475569; }
+.remember-row { display:flex; align-items:center; gap:8px; margin-bottom:18px; font-size:.86rem; color:#475569; }
 
 .btn-login {
-    width: 100%; padding: 11px; border: none; border-radius: 8px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-    color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+  width:100%; padding:12px; border:none; border-radius:10px;
+  background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; font-weight:700; font-size:.95rem;
+  cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center; gap:8px; font-family:inherit;
 }
-.btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(37,99,235,0.3); }
+.btn-login:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(79,70,229,.32); }
 
-.forgot-row { text-align: center; margin-top: 14px; font-size: 0.86rem; }
-.forgot-row a { color: #2563eb; text-decoration: none; font-weight: 600; }
-.forgot-row a:hover { text-decoration: underline; }
+.forgot-row { text-align:center; margin-top:16px; font-size:.86rem; }
+.forgot-row a { color:var(--brand); text-decoration:none; font-weight:600; }
+.forgot-row a:hover { text-decoration:underline; }
 
 .alert-error {
-    background: #fde8e8; color: #b91c1c; border: 1px solid #f5c2c7;
-    padding: 10px 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px;
-}
-.alert-success {
-    background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0;
-    padding: 10px 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px;
+  background:#fee2e2; color:#b91c1c; border:1px solid #fecaca;
+  padding:10px 12px; border-radius:10px; font-size:.85rem; margin-bottom:16px;
 }
 
-@media (max-width: 768px) {
-    .login-wrapper { flex-direction: column; max-width: 460px; }
-    .login-intro { padding: 30px 20px; }
-    .login-features { grid-template-columns: 1fr; }
-    .login-form-container { padding: 30px 22px; }
+@media (max-width: 820px) {
+  .auth-card { flex-direction: column; max-width: 460px; }
+  .auth-illus { padding: 30px 24px; }
+  .auth-illus img { max-width: 200px; margin-bottom: 16px; }
+  .auth-form { padding: 32px 26px; }
 }
 </style>
 </head>
 <body>
 
-<div class="login-wrapper">
+<div class="auth-card">
 
-    {{-- ===== Panneau gauche ===== --}}
-    <div class="login-intro">
-        <i class="fas fa-book-open intro-icon"></i>
-        <h1>Bibliothèque universitaire</h1>
-        <p>Système de gestion centralisé</p>
-
-        <div class="login-features">
-            <div class="login-feature"><i class="fas fa-book"></i> Gestion des livres</div>
-            <div class="login-feature"><i class="fas fa-exchange-alt"></i> Suivi des emprunts</div>
-            <div class="login-feature"><i class="fas fa-paper-plane"></i> Demandes en ligne</div>
-            <div class="login-feature"><i class="fas fa-chart-bar"></i> Statistiques</div>
-        </div>
+    {{-- ===== Illustration ===== --}}
+    <div class="auth-illus">
+        <img src="{{ asset('images/image.png') }}" alt="Lecture à la bibliothèque">
+        <h2>Bienvenue à la bibliothèque</h2>
+        <p>Consultez, empruntez et suivez vos livres en quelques clics, où que vous soyez.</p>
     </div>
 
-    {{-- ===== Panneau droit ===== --}}
-    <div class="login-form-container">
-        <h2 class="login-form-title">Connexion</h2>
-        <p class="login-form-subtitle">Accédez à votre espace</p>
+    {{-- ===== Formulaire ===== --}}
+    <div class="auth-form">
 
-        {{-- Message de session (ex: lien de réinitialisation envoyé) --}}
-        @if (session('status'))
-            <div class="alert-success">{{ session('status') }}</div>
-        @endif
+        <div class="brand">
+            <div class="logo"><i class="fas fa-book-open"></i></div>
+            <div>
+                <b>Bibliothèque</b>
+                <small>Espace membre</small>
+            </div>
+        </div>
 
-        {{-- Erreurs --}}
+        <h1>Connexion</h1>
+        <p class="sub">Heureux de vous revoir ! Accédez à votre espace.</p>
+
         @if ($errors->any())
             <div class="alert-error">
                 <i class="fas fa-exclamation-circle"></i>
@@ -177,13 +158,13 @@ body {
             </div>
 
             <button type="submit" class="btn-login">
-                <i class="fas fa-sign-in-alt"></i> Se connecter
+                <i class="fas fa-arrow-right-to-bracket"></i> Se connecter
             </button>
 
             <div class="forgot-row">
-                <span class="text-muted" style="color:#94a3b8;">
-                    Mot de passe oublié ? Contactez l'administration.
-                </span>
+                <a href="{{ route('password.request') }}">
+                    <i class="fas fa-unlock-alt"></i> Mot de passe oublié ?
+                </a>
             </div>
         </form>
     </div>
