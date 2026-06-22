@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Espace Personnel — Bibliothèque universitaire</title>
+<title>Espace Personnel - Bibliothèque universitaire</title>
 
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 

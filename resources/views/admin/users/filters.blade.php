@@ -28,7 +28,7 @@
 
             <option value="Prof"
                 {{ request('role') === 'Prof' ? 'selected' : '' }}>
-                Prof
+                Professeur
             </option>
 
             <option value="Fonctionnaire"

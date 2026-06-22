@@ -17,6 +17,19 @@ class User extends Authenticatable
     public const ROLES_MEMBRES   = ['Étudiant', 'Prof', 'Fonctionnaire', 'Externe'];
     public const ROLES_PERSONNEL = ['Administrateur', 'Bibliothécaire', 'Administration'];
 
+    // 🏷️ Libellés d'affichage (la valeur stockée reste inchangée)
+    public const ROLE_LABELS = ['Prof' => 'Professeur'];
+
+    public static function labelForRole(?string $role): string
+    {
+        return self::ROLE_LABELS[$role] ?? (string) $role;
+    }
+
+    public function roleLabel(): string
+    {
+        return static::labelForRole($this->role);
+    }
+
     public function estMembre(): bool
     {
         return in_array($this->role, self::ROLES_MEMBRES, true);

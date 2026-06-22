@@ -52,7 +52,7 @@
                 <tbody>
                     @forelse($parRole as $r)
                         <tr>
-                            <td><strong>{{ $r->role }}</strong></td>
+                            <td><strong>{{ \App\Models\User::labelForRole($r->role) }}</strong></td>
                             <td>{{ $r->total }}</td>
                             <td><span class="badge bg-success">{{ $r->actifs }}</span></td>
                             <td><span class="badge bg-danger">{{ $r->desactives }}</span></td>
@@ -72,7 +72,7 @@
 new Chart(document.getElementById('rolesChart').getContext('2d'), {
     type: 'doughnut',
     data: {
-        labels: @json($parRole->pluck('role')),
+        labels: @json($parRole->pluck('role')->map(fn ($r) => \App\Models\User::labelForRole($r))),
         datasets: [{
             data: @json($parRole->pluck('total')),
             backgroundColor: ['#4f46e5','#16a34a','#f59e0b','#dc2626','#ec4899'],

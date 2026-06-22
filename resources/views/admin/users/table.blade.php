@@ -81,7 +81,7 @@
                         {{-- SEXE --}}
                         <td>
 
-                            {{ $user->sexe ?? '—' }}
+                            {{ $user->sexe ?? '-' }}
 
                         </td>
 
@@ -100,7 +100,7 @@
                                     @endif
                                 </div>
                             @else
-                                —
+                                -
                             @endif
 
                         </td>
@@ -110,7 +110,7 @@
 
                             <span class="badge-role {{ $badgeClass }}">
 
-                                {{ $user->role }}
+                                {{ $user->roleLabel() }}
 
                             </span>
 

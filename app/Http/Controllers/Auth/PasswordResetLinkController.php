@@ -37,9 +37,16 @@ class PasswordResetLinkController extends Controller
             $request->only('email')
         );
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        if ($status == Password::RESET_LINK_SENT) {
+            return back()->with('status', 'Un lien de réinitialisation a été envoyé à votre adresse email.');
+        }
+
+        $messages = [
+            Password::INVALID_USER    => "Aucun compte ne correspond à cette adresse email.",
+            Password::RESET_THROTTLED => 'Veuillez patienter quelques instants avant de redemander un lien.',
+        ];
+
+        return back()->withInput($request->only('email'))
+            ->withErrors(['email' => $messages[$status] ?? "Impossible d'envoyer le lien. Veuillez réessayer."]);
     }
 }

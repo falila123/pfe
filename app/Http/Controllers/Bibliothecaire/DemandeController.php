@@ -62,7 +62,7 @@ class DemandeController extends Controller
 
         if ($occupes >= $maxLivres) {
             return back()->withErrors([
-                'demande' => "Quota atteint : {$membre->name} occupe déjà {$occupes} livre(s) (max {$maxLivres} pour un {$membre->role})."
+                'demande' => "Quota atteint : {$membre->name} occupe déjà {$occupes} livre(s) (max {$maxLivres} pour un {$membre->roleLabel()})."
             ]);
         }
 
@@ -77,7 +77,7 @@ class DemandeController extends Controller
             ]);
         }
 
-        // ✅ Réservation 24h (atomique) — l'emprunt sera créé au retrait
+        // ✅ Réservation 24h (atomique) - l'emprunt sera créé au retrait
         DB::transaction(function () use ($demande, $exemplaire) {
 
             $exemplaire->update(['statut' => 'Réservé']);
@@ -95,7 +95,7 @@ class DemandeController extends Controller
 
         return back()->with(
             'success',
-            "Demande acceptée ✅ Exemplaire {$exemplaire->code} réservé — à récupérer avant le "
+            "Demande acceptée ✅ Exemplaire {$exemplaire->code} réservé - à récupérer avant le "
                 . $demande->date_limite_retrait->format('d/m/Y à H:i') . "."
         );
     }
@@ -149,7 +149,7 @@ class DemandeController extends Controller
 
         return back()->with(
             'success',
-            "Livre remis à {$membre->name} ✅ Emprunt en cours — retour prévu dans {$maxJours} jours."
+            "Retrait confirmé pour {$membre->name} ✅ Emprunt en cours - retour prévu dans {$maxJours} jours."
         );
     }
 

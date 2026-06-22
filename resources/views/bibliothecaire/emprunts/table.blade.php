@@ -19,13 +19,13 @@
             @forelse($emprunts as $emprunt)
 
                 <tr>
-                    <td>{{ $emprunt->livre->titre ?? '—' }}</td>
+                    <td>{{ $emprunt->livre->titre ?? '-' }}</td>
 
                     <td>
                         <span class="student-info">
                             {{ $emprunt->user->name ?? 'Inconnu' }}
                             <small>{{ $emprunt->user->matricule ?? $emprunt->user->email }}</small>
-                            <span class="badge bg-secondary">{{ $emprunt->user->role }}</span>
+                            <span class="badge bg-secondary">{{ $emprunt->user->roleLabel() }}</span>
                         </span>
                     </td>
 

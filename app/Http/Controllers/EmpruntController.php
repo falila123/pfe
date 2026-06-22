@@ -46,7 +46,7 @@ class EmpruntController extends Controller
 
         if ($occupes >= $maxLivres) {
             return back()->withErrors([
-                'user_id' => "Quota atteint : {$membre->name} occupe déjà {$occupes} livre(s) (max {$maxLivres} pour un {$membre->role})."
+                'user_id' => "Quota atteint : {$membre->name} occupe déjà {$occupes} livre(s) (max {$maxLivres} pour un {$membre->roleLabel()})."
             ]);
         }
 
@@ -67,7 +67,7 @@ class EmpruntController extends Controller
 
         return back()->with(
             'success',
-            "Livre emprunté par {$membre->name} — retour prévu dans {$maxJours} jours."
+            "Livre emprunté par {$membre->name} - retour prévu dans {$maxJours} jours."
         );
     }
 

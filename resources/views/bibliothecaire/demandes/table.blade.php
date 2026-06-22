@@ -24,12 +24,12 @@
                         <span class="student-info">
                             {{ $demande->user->name ?? 'Inconnu' }}
                             <small>{{ $demande->user->matricule ?? $demande->user->email }}</small>
-                            <span class="badge bg-secondary">{{ $demande->user->role }}</span>
+                            <span class="badge bg-secondary">{{ $demande->user->roleLabel() }}</span>
                         </span>
                     </td>
 
                     {{-- LIVRE --}}
-                    <td>{{ $demande->livre->titre ?? '—' }}</td>
+                    <td>{{ $demande->livre->titre ?? '-' }}</td>
 
                     {{-- AUTEUR(S) --}}
                     <td>{{ $demande->livre?->auteurs->pluck('nom')->join(', ') }}</td>
@@ -89,19 +89,14 @@
 
                         @elseif($demande->statut === 'Acceptée')
 
-                            <form method="POST"
-                                  action="{{ route('bibliothecaire.demandes.remettre', $demande) }}"
-                                  onsubmit="return confirm('Confirmer la remise du livre à {{ $demande->user->name }} ? Un emprunt sera créé.');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1">
-                                    <i class="fas fa-hand-holding"></i>
-                                    <span>Remis</span>
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    onclick="openRetraitModal('{{ route('bibliothecaire.demandes.remettre', $demande) }}', @js($demande->user->name), @js($demande->livre->titre))">
+                                Retirer
+                            </button>
 
                         @else
-                            <span class="text-muted">—</span>
+                            <span class="text-muted">-</span>
                         @endif
                     </td>
 

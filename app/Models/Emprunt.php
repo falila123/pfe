@@ -15,7 +15,8 @@ class Emprunt extends Model
         'date_emprunt',
         'date_retour_prevue',
         'date_retour_effective',
-        'statut'
+        'statut',
+        'rappel_envoye'
     ];
 
     // 🗓️ Les dates deviennent des objets Carbon
@@ -23,6 +24,7 @@ class Emprunt extends Model
         'date_emprunt'          => 'date',
         'date_retour_prevue'    => 'date',
         'date_retour_effective' => 'date',
+        'rappel_envoye'         => 'boolean',
     ];
 
     /*

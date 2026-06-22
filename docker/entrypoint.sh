@@ -3,9 +3,11 @@ set -e
 
 cd /var/www/html
 
-# .env : on part de l'exemple s'il n'existe pas dans le conteneur
+# .env : on part du modèle Docker (valeurs MySQL) — IMPORTANT car
+# « php artisan serve » se base sur le fichier .env pour les requêtes web,
+# pas sur les variables d'environnement du conteneur.
 if [ ! -f .env ]; then
-    cp .env.example .env
+    cp .env.docker .env
 fi
 
 # Clé d'application (générée seulement si absente)
@@ -13,7 +15,12 @@ if ! grep -q "APP_KEY=base64:" .env; then
     php artisan key:generate --force
 fi
 
-# On évite toute config en cache (les variables d'environnement priment)
+# Clé Google Books : injectée depuis l'environnement du conteneur (secret)
+if [ -n "$GOOGLE_BOOKS_API_KEY" ]; then
+    sed -i "s|^GOOGLE_BOOKS_API_KEY=.*|GOOGLE_BOOKS_API_KEY=${GOOGLE_BOOKS_API_KEY}|" .env
+fi
+
+# On évite toute config en cache
 php artisan config:clear || true
 
 # Attente que MySQL soit prêt à accepter les connexions

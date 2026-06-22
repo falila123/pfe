@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // 🕒 Expiration automatique des réservations 24h (toutes les heures)
 Schedule::command('demandes:expirer')->hourly();
+
+// 📧 Rappel automatique J-1 : livres à rendre demain (chaque jour à 8h)
+Schedule::command('emprunts:rappels')->dailyAt('08:00');

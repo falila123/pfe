@@ -62,10 +62,10 @@
             <div>
                 @if($dernierEmprunt)
                     <div class="act-title">
-                        Dernier emprunt : <strong>{{ $dernierEmprunt->livre->titre ?? '—' }}</strong>
+                        Dernier emprunt : <strong>{{ $dernierEmprunt->livre->titre ?? '-' }}</strong>
                     </div>
                     <div class="act-sub">
-                        par {{ $dernierEmprunt->user->name ?? '—' }}
+                        par {{ $dernierEmprunt->user->name ?? '-' }}
                         · {{ $dernierEmprunt->date_emprunt?->format('d/m/Y') }}
                     </div>
                 @else
@@ -80,10 +80,10 @@
             <div>
                 @if($dernierRetour)
                     <div class="act-title">
-                        Dernier retour : <strong>{{ $dernierRetour->livre->titre ?? '—' }}</strong>
+                        Dernier retour : <strong>{{ $dernierRetour->livre->titre ?? '-' }}</strong>
                     </div>
                     <div class="act-sub">
-                        par {{ $dernierRetour->user->name ?? '—' }}
+                        par {{ $dernierRetour->user->name ?? '-' }}
                         · {{ $dernierRetour->date_retour_effective?->format('d/m/Y') }}
                     </div>
                 @else

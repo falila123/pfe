@@ -22,7 +22,7 @@
 
     <div class="info-label">
         Sous-catégorie:
-        <span class="info-badge">{{ $livre->sous_categorie_dewey ?? '—' }}</span>
+        <span class="info-badge">{{ $livre->sous_categorie_dewey ?? '-' }}</span>
     </div>
 
     <div class="info-label">

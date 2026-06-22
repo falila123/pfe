@@ -28,7 +28,7 @@ class DemandeTraitee extends Notification
         $limite = $this->demande->date_limite_retrait?->format('d/m/Y à H:i');
 
         $message = match ($this->demande->statut) {
-            'Acceptée'  => "Votre demande pour « {$titre} » est acceptée ✅ — récupérez le livre avant le {$limite}.",
+            'Acceptée'  => "Votre demande pour « {$titre} » est acceptée ✅ - récupérez le livre avant le {$limite}.",
             'Refusée'   => "Votre demande pour « {$titre} » a été refusée ❌",
             'Récupérée' => "Vous avez récupéré « {$titre} » 📚 Bonne lecture !",
             'Expirée'   => "Votre réservation de « {$titre} » a expiré ⏱️ (livre non récupéré à temps).",

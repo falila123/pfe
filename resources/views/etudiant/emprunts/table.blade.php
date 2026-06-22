@@ -17,7 +17,7 @@
             @forelse($emprunts as $emprunt)
 
                 <tr>
-                    <td>{{ $emprunt->livre->titre ?? '—' }}</td>
+                    <td>{{ $emprunt->livre->titre ?? '-' }}</td>
 
                     <td>{{ $emprunt->date_emprunt?->format('d/m/Y') }}</td>
 

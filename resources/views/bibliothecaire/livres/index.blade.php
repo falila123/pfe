@@ -1,6 +1,6 @@
 @extends('layouts.app-bibliothecaire')
 
-@section('title', 'Gestion Livres')
+@section('title', 'Gestion des Livres')
 
 @section('content')
 
@@ -224,6 +224,9 @@ function escapeHtml(s){
     }[c]));
 }
 
+// Libellé d'affichage du rôle (la valeur reste "Prof")
+function roleLabel(r){ return r === 'Prof' ? 'Professeur' : r; }
+
 function openBorrowModal(id, code){
     document.getElementById('borrowExemplaireId').value = id;
     document.getElementById('borrowUserId').value = '';
@@ -252,7 +255,7 @@ function filterMembers(){
         ? matches.map(m => `
             <button type="button" class="list-group-item list-group-item-action member-result" data-id="${m.id}">
                 <strong>${escapeHtml(m.name)}</strong>
-                <span class="badge bg-secondary">${m.role}</span><br>
+                <span class="badge bg-secondary">${roleLabel(m.role)}</span><br>
                 <small class="text-muted">${m.matricule ? 'Matricule : ' + escapeHtml(m.matricule) : escapeHtml(m.email || '')}</small>
             </button>`).join('')
         : `<div class="text-muted small p-2">Aucun membre trouvé.</div>`;
@@ -270,7 +273,7 @@ function selectBorrowMember(m){
     const actifs    = (m.emprunts_actifs ?? 0) + (m.reservations ?? 0);
 
     document.getElementById('selMemberName').innerText = m.name + ' ';
-    document.getElementById('selMemberType').innerText = m.role;
+    document.getElementById('selMemberType').innerText = roleLabel(m.role);
     document.getElementById('selMemberId').innerText =
         m.matricule ? ('Matricule : ' + m.matricule)
         : (m.numero_piece ? ('Pièce : ' + m.numero_piece) : (m.email || ''));
@@ -304,8 +307,8 @@ function selectBorrowMember(m){
         ret.setDate(ret.getDate() + maxJours);
         document.getElementById('lblDateRetour').innerText = ret.toLocaleDateString('fr-FR');
     } else {
-        document.getElementById('lblDuree').innerText = '—';
-        document.getElementById('lblDateRetour').innerText = '—';
+        document.getElementById('lblDuree').innerText = '-';
+        document.getElementById('lblDateRetour').innerText = '-';
     }
 }
 

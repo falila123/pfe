@@ -19,7 +19,7 @@
                 <tr>
 
                     {{-- LIVRE --}}
-                    <td>{{ $demande->livre->titre ?? '—' }}</td>
+                    <td>{{ $demande->livre->titre ?? '-' }}</td>
 
                     {{-- AUTEUR(S) --}}
                     <td>{{ $demande->livre?->auteurs->pluck('nom')->join(', ') }}</td>
@@ -70,7 +70,7 @@
                             </button>
 
                         @else
-                            <span class="text-muted">—</span>
+                            <span class="text-muted">-</span>
                         @endif
                     </td>
 

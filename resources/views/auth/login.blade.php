@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connexion — Bibliothèque universitaire</title>
+<title>Espace Membre - Bibliothèque universitaire</title>
 
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
@@ -89,6 +89,10 @@ body {
   background:#fee2e2; color:#b91c1c; border:1px solid #fecaca;
   padding:10px 12px; border-radius:10px; font-size:.85rem; margin-bottom:16px;
 }
+.alert-success {
+  background:#dcfce7; color:#15803d; border:1px solid #bbf7d0;
+  padding:10px 12px; border-radius:10px; font-size:.85rem; margin-bottom:16px;
+}
 
 @media (max-width: 820px) {
   .auth-card { flex-direction: column; max-width: 460px; }
@@ -122,6 +126,13 @@ body {
 
         <h1>Connexion</h1>
         <p class="sub">Heureux de vous revoir ! Accédez à votre espace.</p>
+
+        @if (session('status'))
+            <div class="alert-success">
+                <i class="fas fa-check-circle"></i>
+                {{ session('status') }}
+            </div>
+        @endif
 
         @if ($errors->any())
             <div class="alert-error">

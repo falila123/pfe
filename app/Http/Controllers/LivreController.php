@@ -422,7 +422,7 @@ public function destroyExemplaire($id)
             $data = $this->fetchGoogleBooks('isbn:' . $isbn);
         }
 
-        // 2) Google Books par titre (recherche plein texte — l'opérateur intitle: est mal encodé)
+        // 2) Google Books par titre (recherche plein texte - l'opérateur intitle: est mal encodé)
         if (! $data && $titre) {
             $data = $this->fetchGoogleBooks($titre);
         }

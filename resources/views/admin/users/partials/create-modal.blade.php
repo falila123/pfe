@@ -125,7 +125,7 @@
 
                             <optgroup label="Membres">
                                 <option value="Étudiant">Étudiant</option>
-                                <option value="Prof">Prof</option>
+                                <option value="Prof">Professeur</option>
                                 <option value="Fonctionnaire">Fonctionnaire</option>
                                 <option value="Externe">Externe</option>
                             </optgroup>

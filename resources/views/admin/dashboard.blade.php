@@ -59,7 +59,7 @@
                 <div class="act-ico primary"><i class="fas fa-user-plus"></i></div>
                 <div>
                     <div class="act-title">Nouvel utilisateur : <strong>{{ $lastUser->name }}</strong></div>
-                    <div class="act-sub">{{ $lastUser->role ?? 'Utilisateur' }} · {{ $lastUser->created_at?->format('d/m/Y') }}</div>
+                    <div class="act-sub">{{ $lastUser ? $lastUser->roleLabel() : 'Utilisateur' }} · {{ $lastUser->created_at?->format('d/m/Y') }}</div>
                 </div>
             </div>
         @endif
@@ -70,7 +70,7 @@
                 <div class="act-ico success"><i class="fas fa-user-tie"></i></div>
                 <div>
                     <div class="act-title">Dernier personnel ajouté : <strong>{{ $lastStaff->name }}</strong></div>
-                    <div class="act-sub">{{ $lastStaff->role }} · {{ $lastStaff->created_at?->format('d/m/Y') }}</div>
+                    <div class="act-sub">{{ $lastStaff->roleLabel() }} · {{ $lastStaff->created_at?->format('d/m/Y') }}</div>
                 </div>
             </div>
         @endif
@@ -81,7 +81,7 @@
                 <div class="act-ico danger"><i class="fas fa-user-slash"></i></div>
                 <div>
                     <div class="act-title">Dernier compte désactivé : <strong>{{ $lastDeactivated->name }}</strong></div>
-                    <div class="act-sub">{{ $lastDeactivated->role }}</div>
+                    <div class="act-sub">{{ $lastDeactivated->roleLabel() }}</div>
                 </div>
             </div>
         @endif

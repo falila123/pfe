@@ -13,7 +13,7 @@ class StatistiqueController extends Controller
 {
     public function index()
     {
-        // 📊 KPI — vue d'ensemble structurelle (volumes)
+        // 📊 KPI - vue d'ensemble structurelle (volumes)
         $adherents        = User::whereIn('role', User::ROLES_MEMBRES)->count();
         $totalLivres      = Livre::count();
         $totalExemplaires = Exemplaire::count();

@@ -60,7 +60,7 @@
             @forelse($aRendre as $emprunt)
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                     <div>
-                        <div class="fw-semibold">{{ $emprunt->livre->titre ?? '—' }}</div>
+                        <div class="fw-semibold">{{ $emprunt->livre->titre ?? '-' }}</div>
                         <small class="text-muted">
                             Retour prévu : {{ $emprunt->date_retour_prevue?->format('d/m/Y') }}
                         </small>
@@ -87,7 +87,7 @@
             @if($derniereDemande)
                 <div class="d-flex justify-content-between align-items-center py-2">
                     <div>
-                        <div class="fw-semibold">{{ $derniereDemande->livre->titre ?? '—' }}</div>
+                        <div class="fw-semibold">{{ $derniereDemande->livre->titre ?? '-' }}</div>
                         <small class="text-muted">{{ $derniereDemande->created_at->format('d/m/Y') }}</small>
                     </div>
                     @if($derniereDemande->statut === 'En attente')
