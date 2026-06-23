@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
-    environment:
+    environment: &app-environment
       APP_NAME: "Bibliotheque"
       APP_ENV: local
       APP_DEBUG: "true"
@@ -22,6 +22,18 @@ services:
 
       # Récupérée depuis ton fichier .env (substitution Docker Compose)
       GOOGLE_BOOKS_API_KEY: "${GOOGLE_BOOKS_API_KEY}"
+    depends_on:
+      - db
+
+  # ===================== Planificateur (tâches automatiques) =====================
+  # Lance schedule:work → expiration des réservations 24h + rappels email J-1
+  scheduler:
+    build: .
+    container_name: biblio_scheduler
+    restart: unless-stopped
+    environment:
+      <<: *app-environment        # même config que l'app
+      CONTAINER_ROLE: scheduler    # bascule l'entrypoint en mode planificateur
     depends_on:
       - db
 

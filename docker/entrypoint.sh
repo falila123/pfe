@@ -30,10 +30,22 @@ until php -r "new PDO('mysql:host=db;port=3306', 'biblio', 'secret');" >/dev/nul
 done
 echo "✅ Base de données prête."
 
-# Migrations + données par défaut (idempotent) + lien de stockage
+# ============================================================
+#  Rôle "scheduler" : on lance uniquement le planificateur Laravel
+#  (schedule:work exécute les tâches planifiées chaque minute :
+#   expiration des réservations 24h + rappels email J-1)
+# ============================================================
+if [ "$CONTAINER_ROLE" = "scheduler" ]; then
+    echo "🕒 Démarrage du planificateur (schedule:work)..."
+    exec php artisan schedule:work
+fi
+
+# ============================================================
+#  Rôle "app" (par défaut) : migrations + seed + serveur web
+# ============================================================
 php artisan migrate --force
 php artisan db:seed --force
 php artisan storage:link || true
 
-# Démarrage du serveur Laravel
+echo "🚀 Démarrage du serveur Laravel..."
 exec php artisan serve --host=0.0.0.0 --port=8000
